@@ -1,1 +1,396 @@
-[\n    {\n        "id": 1,\n        "name": "Restoran Vegehop",\n        "phone": "014649400",\n        "address": "Vlaška ulica 79",\n        "zipcode": 10000,\n        "cityname": "Zagreb",\n        "delivery": true,\n        "latitude": 45.81462343,\n        "longitude": 15.98823879,\n        "websitelinks": [\n            {\n                "link": "vegehop.hr",\n                "type": "website"\n            },\n            {\n                "link": "facebook.com/vegehop",\n                "type": "facebook"\n            },\n            {\n                "link": "instagram.com/vegehop_restaurant",\n                "type": "instagram"\n            },\n            {\n                "link": "youtube.com/user/Vegehop",\n                "type": "youtube"\n            }\n        ],\n        "opening_hours": "Mon-Sat 12:00-20:00"\n    },\n    {\n        "id": 2,\n        "name": "Gajbica",\n        "phone": "0915141274",\n        "address": "Vlaška ulica 7",\n        "zipcode": 10000,\n        "cityname": "Zagreb",\n        "delivery": true,\n        "latitude": 45.81391498,\n        "longitude": 15.97946271,\n        "websitelinks": [\n            {\n                "link": "gajbica.eatbu.com",\n                "type": "website"\n            },\n            {\n                "link": "facebook.com/gajbicahr",\n                "type": "facebook"\n            },\n            {\n                "link": "instagram.com/gajbica_zg",\n                "type": "instagram"\n            }\n        ],\n        "opening_hours": "Mon-Sat 11:00-18:00"\n    },\n    {\n        "id": 3,\n        "name": "OAZA Joyful Kitchen",\n        "phone": "0976602744",\n        "address": "Ulica Pavla Radića 9",\n        "zipcode": 10000,\n        "cityname": "Zagreb",\n        "delivery": true,\n        "latitude": 45.81434540,\n        "longitude": 15.97565004,\n        "websitelinks": [\n            {\n                "link": "joyful-kitchen.com",\n                "type": "website"\n            },\n            {\n                "link": "facebook.com/oaza.joyful.kitchen",\n                "type": "facebook"\n            },\n            {\n                "link": "instagram.com/oaza.joyful.kitchen",\n                "type": "instagram"\n            },\n            {\n                "link": "tiktok.com/@oaza.joyful.kitchen",\n                "type": "tiktok"\n            },\n            {\n                "link": "linkedin.com/company/oaza-joyful-kitchen",\n                "type": "linkedin"\n            }\n        ],\n        "opening_hours": "Mon-Fri 10:00-21:00,Sat 12:00-21:00"\n    },\n    {\n        "id": 4,\n        "name": "BEKIND",\n        "phone": "015534763",\n        "address": "Ilica 75",\n        "zipcode": 10000,\n        "cityname": "Zagreb",\n        "delivery": false,\n        "latitude": 45.81245345,\n        "longitude": 15.96450714,\n        "websitelinks": [\n            {\n                "link": "bekind.hr",\n                "type": "website"\n            },\n            {\n                "link": "facebook.com/bekind.zagreb",\n                "type": "facebook"\n            },\n            {\n                "link": "instagram.com/bekind.zagreb",\n                "type": "instagram"\n            }\n        ],\n        "opening_hours": "Tue-Sat 09:00-22:00,Sun 09:00-16:00"\n    },\n    {\n        "id": 5,\n        "name": "Zrno bio bistro",\n        "phone": "014847540",\n        "address": "Medulićeva ulica 20",\n        "zipcode": 10000,\n        "cityname": "Zagreb",\n        "delivery": true,\n        "latitude": 45.81122113,\n        "longitude": 15.96667598,\n        "websitelinks": [\n            {\n                "link": "zrnobiobistro.hr",\n                "type": "website"\n            },\n            {\n                "link": "facebook.com/zrnobiobistro",\n                "type": "facebook"\n            },\n            {\n                "link": "instagram.com/zrnobiobistro",\n                "type": "instagram"\n            }\n        ],\n        "opening_hours": "Mon-Sat 12:00-21:30"\n    },\n    {\n        "id": 6,\n        "name": "Falafel, etc.",\n        "phone": "012343945",\n        "address": "Ulica Andrije Žaje 60",\n        "zipcode": 10000,\n        "cityname": "Zagreb",\n        "delivery": true,\n        "latitude": 45.80695890,\n        "longitude": 15.95334024,\n        "websitelinks": [\n            {\n                "link": "falafeletc.com.hr",\n                "type": "website"\n            },\n            {\n                "link": "facebook.com/falafeletczg",\n                "type": "facebook"\n            }\n        ],\n        "opening_hours": "Mon-Sun 11:00-21:30"\n    },\n    {\n        "id": 7,\n        "name": "Shambala",\n        "phone": "0957618710",\n        "address": "Iločka ulica 34",\n        "zipcode": 10000,\n        "cityname": "Zagreb",\n        "delivery": true,\n        "latitude": 45.79956603,\n        "longitude": 15.95967074,\n        "websitelinks": [\n            {\n                "link": "facebook.com/people/Shambala-Vegan-food-sweets-more/100083364727743",\n                "type": "facebook"\n            }\n        ],\n        "opening_hours": "Mon-Fri 11:00-18:00,Sat-Sun 11:00:16:00"\n    },\n    {\n        "id": 8,\n        "name": "Simple Green by Jelena",\n        "phone": "015561679",\n        "address": "Zelinska Ulica 7",\n        "zipcode": 10000,\n        "cityname": "Zagreb",\n        "delivery": true,\n        "latitude": 45.80106354,\n        "longitude": 15.97246634,\n        "websitelinks": [\n            {\n                "link": "simplegreenbyjelena.com",\n                "type": "website"\n            },\n            {\n                "link": "facebook.com/profile.php?id=100057104513129",\n                "type": "facebook"\n            },\n            {\n                "link": "instagram.com/simplegreen_by_jelena",\n                "type": "instagram"\n            },\n            {\n                "link": "tripadvisor.com/Restaurant_Review-g294454-d11844934-Reviews-Simple_Green_Bake_by_Jelena-Zagreb_Central_Croatia.html",\n                "type": "tripadvisor"\n            }\n        ],\n        "opening_hours": "Mon-Sat 08:00-16:00"\n    },\n    {\n        "id": 9,\n        "name": "Vege Fino za sve",\n        "phone": "098777577",\n        "address": "Ulica Lavoslava Ružičke 48",\n        "zipcode": 10000,\n        "cityname": "Zagreb",\n        "delivery": true,\n        "latitude": 45.79626824,\n        "longitude": 15.96986333,\n        "websitelinks": [\n            {\n                "link": "vegefinozasve.com",\n                "type": "website"\n            },\n            {\n                "link": "facebook.com/VegeFinoZaSve",\n                "type": "facebook"\n            }\n        ],\n        "opening_hours": "Mon-Fri 10:00-18:00,Sun 12:00-18:00"\n    },\n    {\n        "id": 10,\n        "name": "Barcode Mitra",\n        "phone": "013770428",\n        "address": "Zagrebačka cesta 113",\n        "zipcode": 10000,\n        "cityname": "Zagreb",\n        "delivery": true,\n        "latitude": 45.80673849,\n        "longitude": 15.92470464,\n        "websitelinks": [\n            {\n                "link": "barcodemitra.hr",\n                "type": "website"\n            },\n            {\n                "link": "facebook.com/BarcodeMitra",\n                "type": "facebook"\n            },\n            {\n                "link": "instagram.com/barcode_mitra",\n                "type": "instagram"\n            }\n        ],\n        "opening_hours": "Mon-Sat 14:00-22:00"\n    },\n    {\n        "id": 11,\n        "name": "Pandora Greenbox",\n        "phone": "021236120",\n        "address": "Obrov ulica 4",\n        "zipcode": 21000,\n        "cityname": "Split",\n        "delivery": false,\n        "latitude": 43.50930416,\n        "longitude": 16.43764950,\n        "websitelinks": [\n            {\n                "link": "pandoragreenbox.com",\n                "type": "website"\n            },\n            {\n                "link": "facebook.com/PandoraGreenbox",\n                "type": "facebook"\n            },\n            {\n                "link": "instagram.com/pandora_greenbox",\n                "type": "instagram"\n            }\n        ],\n        "opening_hours": "Mon-Sun 08:30-12:00"\n    },\n    {\n        "id": 12,\n        "name": "Upcafe",\n        "phone": "0916210500",\n        "address": "Ulica Domovinskog rata 29a",\n        "zipcode": 21000,\n        "cityname": "Split",\n        "delivery": true,\n        "latitude": 43.51692872,\n        "longitude": 16.44540914,\n        "websitelinks": [\n            {\n                "link": "upcafe.hr",\n                "type": "website"\n            },\n            {\n                "link": "facebook.com/upcafe12",\n                "type": "facebook"\n            },\n            {\n                "link": "instagram.com/upcafe.split",\n                "type": "instagram"\n            },\n            {\n                "link": "tripadvisor.com/Restaurant_Review-g295370-d5773474-Reviews-UPcafe-Split_Split_Dalmatia_County_Dalmatia.html",\n                "type": "tripadvisor"\n            }\n        ],\n        "opening_hours": "Mon-Sat 07:00-20:00,Sun 08:00-20:00"\n    },\n    {\n        "id": 13,\n        "name": "The Botanist",\n        "phone": "0924232296",\n        "address": "Ulica Mihovila Pavlinovića 4",\n        "zipcode": 23000,\n        "cityname": "Zadar",\n        "delivery": false,\n        "latitude": 44.11643740,\n        "longitude": 15.22593932,\n        "websitelinks": [\n            {\n                "link": "instagram.com/botanist_zadar",\n                "type": "instagram"\n            }\n        ],\n        "opening_hours": "Mon-Sun 12:00-23:00"\n    },\n    {\n        "id": 14,\n        "name": "Nishta",\n        "phone": "020322088",\n        "address": "Prijeko ulica bb",\n        "zipcode": 20000,\n        "cityname": "Dubrovnik",\n        "delivery": false,\n        "latitude": 42.67534972,\n        "longitude": 18.10592518,\n        "websitelinks": [\n            {\n                "link": "nishtarestaurant.com",\n                "type": "website"\n            },\n            {\n                "link": "facebook.com/nishtarestaurant",\n                "type": "facebook"\n            },\n            {\n                "link": "instagram.com/explore/locations/798999121",\n                "type": "instagram"\n            },\n            {\n                "link": "twitter.com/hashtag/nishta",\n                "type": "X"\n            }\n        ],\n        "opening_hours": "Mon-Sat 11:30-22:00"\n    },\n    {\n        "id": 15,\n        "name": "BioMania Bistro Bol",\n        "phone": "0919362276",\n        "address": "Rudina 10",\n        "zipcode": 21420,\n        "cityname": "Bol",\n        "delivery": false,\n        "latitude": 43.26175996,\n        "longitude": 16.65493408,\n        "websitelinks": [\n            {\n                "link": "biomania.hr",\n                "type": "website"\n            },\n            {\n                "link": "facebook.com/biomaniahr",\n                "type": "facebook"\n            },\n            {\n                "link": "instagram.com/biomaniahr",\n                "type": "instagram"\n            },\n            {\n                "link": "tripadvisor.com/Restaurant_Review-g303802-d14997286-Reviews-BioMania_Street_Food-Bol_Brac_Island_Split_Dalmatia_County_Dalmatia.html",\n                "type": "tripadvisor"\n            }\n        ],\n        "opening_hours": "Mon-Thu 13:00-21:00,Sat 13:00-21:00,Sun 10:00-22:00"\n    }\n]
+[
+    {
+        "id": 1,
+        "name": "Restoran Vegehop",
+        "phone": "014649400",
+        "address": "Vlaška ulica 79",
+        "zipcode": 10000,
+        "cityname": "Zagreb",
+        "delivery": true,
+        "latitude": 45.81462343,
+        "longitude": 15.98823879,
+        "websitelinks": [
+            {
+                "link": "vegehop.hr",
+                "type": "website"
+            },
+            {
+                "link": "facebook.com/vegehop",
+                "type": "facebook"
+            },
+            {
+                "link": "instagram.com/vegehop_restaurant",
+                "type": "instagram"
+            },
+            {
+                "link": "youtube.com/user/Vegehop",
+                "type": "youtube"
+            }
+        ],
+        "opening_hours": "Mon-Sat 12:00-20:00"
+    },
+    {
+        "id": 2,
+        "name": "Gajbica",
+        "phone": "0915141274",
+        "address": "Vlaška ulica 7",
+        "zipcode": 10000,
+        "cityname": "Zagreb",
+        "delivery": true,
+        "latitude": 45.81391498,
+        "longitude": 15.97946271,
+        "websitelinks": [
+            {
+                "link": "gajbica.eatbu.com",
+                "type": "website"
+            },
+            {
+                "link": "facebook.com/gajbicahr",
+                "type": "facebook"
+            },
+            {
+                "link": "instagram.com/gajbica_zg",
+                "type": "instagram"
+            }
+        ],
+        "opening_hours": "Mon-Sat 11:00-18:00"
+    },
+    {
+        "id": 3,
+        "name": "OAZA Joyful Kitchen",
+        "phone": "0976602744",
+        "address": "Ulica Pavla Radića 9",
+        "zipcode": 10000,
+        "cityname": "Zagreb",
+        "delivery": true,
+        "latitude": 45.81434540,
+        "longitude": 15.97565004,
+        "websitelinks": [
+            {
+                "link": "joyful-kitchen.com",
+                "type": "website"
+            },
+            {
+                "link": "facebook.com/oaza.joyful.kitchen",
+                "type": "facebook"
+            },
+            {
+                "link": "instagram.com/oaza.joyful.kitchen",
+                "type": "instagram"
+            },
+            {
+                "link": "tiktok.com/@oaza.joyful.kitchen",
+                "type": "tiktok"
+            },
+            {
+                "link": "linkedin.com/company/oaza-joyful-kitchen",
+                "type": "linkedin"
+            }
+        ],
+        "opening_hours": "Mon-Fri 10:00-21:00,Sat 12:00-21:00"
+    },
+    {
+        "id": 4,
+        "name": "BEKIND",
+        "phone": "015534763",
+        "address": "Ilica 75",
+        "zipcode": 10000,
+        "cityname": "Zagreb",
+        "delivery": false,
+        "latitude": 45.81245345,
+        "longitude": 15.96450714,
+        "websitelinks": [
+            {
+                "link": "bekind.hr",
+                "type": "website"
+            },
+            {
+                "link": "facebook.com/bekind.zagreb",
+                "type": "facebook"
+            },
+            {
+                "link": "instagram.com/bekind.zagreb",
+                "type": "instagram"
+            }
+        ],
+        "opening_hours": "Tue-Sat 09:00-22:00,Sun 09:00-16:00"
+    },
+    {
+        "id": 5,
+        "name": "Zrno bio bistro",
+        "phone": "014847540",
+        "address": "Medulićeva ulica 20",
+        "zipcode": 10000,
+        "cityname": "Zagreb",
+        "delivery": true,
+        "latitude": 45.81122113,
+        "longitude": 15.96667598,
+        "websitelinks": [
+            {
+                "link": "zrnobiobistro.hr",
+                "type": "website"
+            },
+            {
+                "link": "facebook.com/zrnobiobistro",
+                "type": "facebook"
+            },
+            {
+                "link": "instagram.com/zrnobiobistro",
+                "type": "instagram"
+            }
+        ],
+        "opening_hours": "Mon-Sat 12:00-21:30"
+    },
+    {
+        "id": 6,
+        "name": "Falafel, etc.",
+        "phone": "012343945",
+        "address": "Ulica Andrije Žaje 60",
+        "zipcode": 10000,
+        "cityname": "Zagreb",
+        "delivery": true,
+        "latitude": 45.80695890,
+        "longitude": 15.95334024,
+        "websitelinks": [
+            {
+                "link": "falafeletc.com.hr",
+                "type": "website"
+            },
+            {
+                "link": "facebook.com/falafeletczg",
+                "type": "facebook"
+            }
+        ],
+        "opening_hours": "Mon-Sun 11:00-21:30"
+    },
+    {
+        "id": 7,
+        "name": "Shambala",
+        "phone": "0957618710",
+        "address": "Iločka ulica 34",
+        "zipcode": 10000,
+        "cityname": "Zagreb",
+        "delivery": true,
+        "latitude": 45.79956603,
+        "longitude": 15.95967074,
+        "websitelinks": [
+            {
+                "link": "facebook.com/people/Shambala-Vegan-food-sweets-more/100083364727743",
+                "type": "facebook"
+            }
+        ],
+        "opening_hours": "Mon-Fri 11:00-18:00,Sat-Sun 11:00:16:00"
+    },
+    {
+        "id": 8,
+        "name": "Simple Green by Jelena",
+        "phone": "015561679",
+        "address": "Zelinska Ulica 7",
+        "zipcode": 10000,
+        "cityname": "Zagreb",
+        "delivery": true,
+        "latitude": 45.80106354,
+        "longitude": 15.97246634,
+        "websitelinks": [
+            {
+                "link": "simplegreenbyjelena.com",
+                "type": "website"
+            },
+            {
+                "link": "facebook.com/profile.php?id=100057104513129",
+                "type": "facebook"
+            },
+            {
+                "link": "instagram.com/simplegreen_by_jelena",
+                "type": "instagram"
+            },
+            {
+                "link": "tripadvisor.com/Restaurant_Review-g294454-d11844934-Reviews-Simple_Green_Bake_by_Jelena-Zagreb_Central_Croatia.html",
+                "type": "tripadvisor"
+            }
+        ],
+        "opening_hours": "Mon-Sat 08:00-16:00"
+    },
+    {
+        "id": 9,
+        "name": "Vege Fino za sve",
+        "phone": "098777577",
+        "address": "Ulica Lavoslava Ružičke 48",
+        "zipcode": 10000,
+        "cityname": "Zagreb",
+        "delivery": true,
+        "latitude": 45.79626824,
+        "longitude": 15.96986333,
+        "websitelinks": [
+            {
+                "link": "vegefinozasve.com",
+                "type": "website"
+            },
+            {
+                "link": "facebook.com/VegeFinoZaSve",
+                "type": "facebook"
+            }
+        ],
+        "opening_hours": "Mon-Fri 10:00-18:00,Sun 12:00-18:00"
+    },
+    {
+        "id": 10,
+        "name": "Barcode Mitra",
+        "phone": "013770428",
+        "address": "Zagrebačka cesta 113",
+        "zipcode": 10000,
+        "cityname": "Zagreb",
+        "delivery": true,
+        "latitude": 45.80673849,
+        "longitude": 15.92470464,
+        "websitelinks": [
+            {
+                "link": "barcodemitra.hr",
+                "type": "website"
+            },
+            {
+                "link": "facebook.com/BarcodeMitra",
+                "type": "facebook"
+            },
+            {
+                "link": "instagram.com/barcode_mitra",
+                "type": "instagram"
+            }
+        ],
+        "opening_hours": "Mon-Sat 14:00-22:00"
+    },
+    {
+        "id": 11,
+        "name": "Pandora Greenbox",
+        "phone": "021236120",
+        "address": "Obrov ulica 4",
+        "zipcode": 21000,
+        "cityname": "Split",
+        "delivery": false,
+        "latitude": 43.50930416,
+        "longitude": 16.43764950,
+        "websitelinks": [
+            {
+                "link": "pandoragreenbox.com",
+                "type": "website"
+            },
+            {
+                "link": "facebook.com/PandoraGreenbox",
+                "type": "facebook"
+            },
+            {
+                "link": "instagram.com/pandora_greenbox",
+                "type": "instagram"
+            }
+        ],
+        "opening_hours": "Mon-Sun 08:30-12:00"
+    },
+    {
+        "id": 12,
+        "name": "Upcafe",
+        "phone": "0916210500",
+        "address": "Ulica Domovinskog rata 29a",
+        "zipcode": 21000,
+        "cityname": "Split",
+        "delivery": true,
+        "latitude": 43.51692872,
+        "longitude": 16.44540914,
+        "websitelinks": [
+            {
+                "link": "upcafe.hr",
+                "type": "website"
+            },
+            {
+                "link": "facebook.com/upcafe12",
+                "type": "facebook"
+            },
+            {
+                "link": "instagram.com/upcafe.split",
+                "type": "instagram"
+            },
+            {
+                "link": "tripadvisor.com/Restaurant_Review-g295370-d5773474-Reviews-UPcafe-Split_Split_Dalmatia_County_Dalmatia.html",
+                "type": "tripadvisor"
+            }
+        ],
+        "opening_hours": "Mon-Sat 07:00-20:00,Sun 08:00-20:00"
+    },
+    {
+        "id": 13,
+        "name": "The Botanist",
+        "phone": "0924232296",
+        "address": "Ulica Mihovila Pavlinovića 4",
+        "zipcode": 23000,
+        "cityname": "Zadar",
+        "delivery": false,
+        "latitude": 44.11643740,
+        "longitude": 15.22593932,
+        "websitelinks": [
+            {
+                "link": "instagram.com/botanist_zadar",
+                "type": "instagram"
+            }
+        ],
+        "opening_hours": "Mon-Sun 12:00-23:00"
+    },
+    {
+        "id": 14,
+        "name": "Nishta",
+        "phone": "020322088",
+        "address": "Prijeko ulica bb",
+        "zipcode": 20000,
+        "cityname": "Dubrovnik",
+        "delivery": false,
+        "latitude": 42.67534972,
+        "longitude": 18.10592518,
+        "websitelinks": [
+            {
+                "link": "nishtarestaurant.com",
+                "type": "website"
+            },
+            {
+                "link": "facebook.com/nishtarestaurant",
+                "type": "facebook"
+            },
+            {
+                "link": "instagram.com/explore/locations/798999121",
+                "type": "instagram"
+            },
+            {
+                "link": "twitter.com/hashtag/nishta",
+                "type": "X"
+            }
+        ],
+        "opening_hours": "Mon-Sat 11:30-22:00"
+    },
+    {
+        "id": 15,
+        "name": "BioMania Bistro Bol",
+        "phone": "0919362276",
+        "address": "Rudina 10",
+        "zipcode": 21420,
+        "cityname": "Bol",
+        "delivery": false,
+        "latitude": 43.26175996,
+        "longitude": 16.65493408,
+        "websitelinks": [
+            {
+                "link": "biomania.hr",
+                "type": "website"
+            },
+            {
+                "link": "facebook.com/biomaniahr",
+                "type": "facebook"
+            },
+            {
+                "link": "instagram.com/biomaniahr",
+                "type": "instagram"
+            },
+            {
+                "link": "tripadvisor.com/Restaurant_Review-g303802-d14997286-Reviews-BioMania_Street_Food-Bol_Brac_Island_Split_Dalmatia_County_Dalmatia.html",
+                "type": "tripadvisor"
+            }
+        ],
+        "opening_hours": "Mon-Thu 13:00-21:00,Sat 13:00-21:00,Sun 10:00-22:00"
+    }
+]
