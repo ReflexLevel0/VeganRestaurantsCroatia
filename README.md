@@ -23,10 +23,9 @@ This repository contains data about vegan restaurants all over croatia. The data
 | --- | --- | --- |
 | 0.1 | 2023-10-28 | created initial repository with no data |
 
-# CSV file structure
-
-Delimiter: ";"
-
+# CSV/JSON file structure
+CSV delimiter: ";"
+JSON file
 | Field | Description | Datatype | Primary key | Required |
 | --- | --- | --- | --- | --- |
 | id | Unique identifier of the restaurant | numeric | true | true |
@@ -39,4 +38,20 @@ Delimiter: ";"
 | website | Website link used by the restaurant | string | false | false |
 | opening_hours | Opening and closing hours by day, separated by "," (example: "Mon-Fri 10:00-18:00,Sun 10:00-16:00") | string | false | false |
 | delivery | Whether or not the restaurant supports delivery ("f" for false and "t" for true) | string | false | true |
+| cityName | Name of the city in which the restaurant is in | string | false | true |
+
+# JSON file structure
+The JSON file is structured as an array of restaurant objects. Restaurant object fields are described in the following table.
+| Field | Description | Datatype | Primary key | Required |
+| --- | --- | --- | --- | --- |
+| id | Unique identifier of the restaurant | number | true | true |
+| name | Name of the restaurant | string | false | true |
+| address | Current location of the restaurant | string | false | true |
+| zipcode | Restaurant zipcode location | number | false | true |
+| latitude | Latitude coordinates of the restaurant | number | false | true |
+| longitude | Longitude coordinates of the restaurant | number | false | true |
+| phone | Phone number used to communicate with the restaurant | string | false | false |
+| website | Website link used by the restaurant | string | false | false |
+| opening_hours | Opening and closing hours by day, separated by "," (example: "Mon-Fri 10:00-18:00,Sun 10:00-16:00") | string | false | false |
+| delivery | Whether or not the restaurant supports delivery | boolean | false | true |
 | cityName | Name of the city in which the restaurant is in | string | false | true |
