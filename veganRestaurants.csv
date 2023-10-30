@@ -1,4 +1,4 @@
-id;name;address;zipcode;latitude;longitude;phone;opening_hours;delivery;cityname;linktype;link
+id;name;address;zipcode;latitude;longitude;phone;opening_hours;delivery;city;linktype;link
 1;Restoran Vegehop;Vlaška ulica 79;10000;45.81462343;15.98823879;014649400;Mon-Sat 12:00-20:00;t;Zagreb;website;vegehop.hr
 1;Restoran Vegehop;Vlaška ulica 79;10000;45.81462343;15.98823879;014649400;Mon-Sat 12:00-20:00;t;Zagreb;facebook;facebook.com/vegehop
 1;Restoran Vegehop;Vlaška ulica 79;10000;45.81462343;15.98823879;014649400;Mon-Sat 12:00-20:00;t;Zagreb;instagram;instagram.com/vegehop_restaurant

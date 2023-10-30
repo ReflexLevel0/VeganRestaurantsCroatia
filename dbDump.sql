@@ -42,7 +42,7 @@ CREATE TYPE public.restaurantexporttype AS (
 	phone character varying(30),
 	opening_hours character varying(255),
 	delivery boolean,
-	cityname character varying(30),
+	city character varying(30),
 	websitelinks jsonb
 );
 
@@ -125,7 +125,7 @@ CREATE VIEW public.restaurantwithlinksview AS
     r.phone,
     r.opening_hours,
     r.delivery,
-    city.name AS cityname,
+    city.name AS city,
     ( SELECT jsonb_agg(websitelinkquery.websitelinktype) AS jsonb_agg
            FROM ( SELECT ROW(linkmerge.type, linkmerge.link)::public.linkexporttype AS websitelinktype
                    FROM ( SELECT link.type,
@@ -145,7 +145,7 @@ ALTER TABLE public.restaurantwithlinksview OWNER TO postgres;
 --
 
 CREATE VIEW public.restaurantcastview AS
- SELECT ROW(restaurantwithlinksview.id, restaurantwithlinksview.name, restaurantwithlinksview.address, restaurantwithlinksview.zipcode, restaurantwithlinksview.latitude, restaurantwithlinksview.longitude, restaurantwithlinksview.phone, restaurantwithlinksview.opening_hours, restaurantwithlinksview.delivery, (restaurantwithlinksview.cityname)::character varying(30), restaurantwithlinksview.websitelinks)::public.restaurantexporttype AS restaurantcast
+ SELECT ROW(restaurantwithlinksview.id, restaurantwithlinksview.name, restaurantwithlinksview.address, restaurantwithlinksview.zipcode, restaurantwithlinksview.latitude, restaurantwithlinksview.longitude, restaurantwithlinksview.phone, restaurantwithlinksview.opening_hours, restaurantwithlinksview.delivery, (restaurantwithlinksview.city)::character varying(30), restaurantwithlinksview.websitelinks)::public.restaurantexporttype AS restaurantcast
    FROM public.restaurantwithlinksview;
 
 
@@ -187,7 +187,7 @@ CREATE VIEW public.restaurantcsvview AS
     r.phone,
     r.opening_hours,
     r.delivery,
-    c.name AS cityname,
+    c.name AS city,
     l.type AS linktype,
     rl.link
    FROM (((public.restaurant r
