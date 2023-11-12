@@ -13,7 +13,7 @@ app.use(cors(corsOptions))
 app.get('/', (req, res) => {
     const urlParams = new URLSearchParams(req.url.split("?")[1])
     const name = urlParams.get('name')
-    const address = urlParams.get('')
+    const address = urlParams.get('address')
     const city = urlParams.get('city')
     const zipcode = urlParams.get('zipcode')
     const latitude = urlParams.get('latitude')
@@ -28,6 +28,7 @@ app.get('/', (req, res) => {
         setTimeout(() => {
             fs.readFile('/tmp/veganRestaurants.json', 'utf-8', (err, data) => {
                 jsonData = data
+                console.log(data)
                 res.send(jsonData)
             })
         }, 250)

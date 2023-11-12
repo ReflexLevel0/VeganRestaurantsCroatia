@@ -21,9 +21,16 @@ export default {
       restaurants: []
     }
   },
+  async mounted() {
+    await this.refreshData()
+  },
   methods: {
-    refreshData(){
-      alert(`search category ${this.$data.searchOption} for text "${this.$data.searchText}"`)
+    async refreshData(e) {
+      e?.preventDefault()
+      //alert(`search category ${this.$data.searchOption} for text "${this.$data.searchText}"`)
+      fetch(`http://localhost:3000/?${this.$data.searchOption}=${this.$data.searchText}`)
+          .then(data => data.json())
+          .then(json => console.log(json))
     }
   }
 }
@@ -34,7 +41,7 @@ export default {
   <form>
     <input class="input-group" type="text" placeholder="Zagreb" v-model="$data.searchText"/>
     <select class="form-select" v-model="$data.searchOption">
-      <option v-for="category in searchCategories" :value=category.value>{{category.text}}</option>
+      <option v-for="category in searchCategories" :value=category.value>{{ category.text }}</option>
     </select>
     <button class="btn btn-primary" type="submit" @click="refreshData">Search</button>
   </form>
@@ -48,13 +55,15 @@ export default {
 </template>
 
 <style scoped>
-form{
+form {
   width: 250px;
 }
-form>input{
+
+form > input {
   margin-bottom: 10px;
 }
-form>select{
+
+form > select {
   margin-bottom: 10px;
 }
 </style>
