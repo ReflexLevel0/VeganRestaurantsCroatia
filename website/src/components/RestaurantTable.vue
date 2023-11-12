@@ -27,7 +27,6 @@ export default {
   methods: {
     async refreshData(e) {
       e?.preventDefault()
-      //alert(`search category ${this.$data.searchOption} for text "${this.$data.searchText}"`)
       fetch(`http://localhost:3000/?${this.$data.searchOption}=${this.$data.searchText}`)
           .then(data => data.json())
           .then(json => console.log(json))

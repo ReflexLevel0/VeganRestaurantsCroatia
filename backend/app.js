@@ -12,23 +12,39 @@ app.use(cors(corsOptions))
 
 app.get('/', (req, res) => {
     const urlParams = new URLSearchParams(req.url.split("?")[1])
-    const name = urlParams.get('name')
-    const address = urlParams.get('address')
-    const city = urlParams.get('city')
-    const zipcode = urlParams.get('zipcode')
-    const latitude = urlParams.get('latitude')
-    const longitude = urlParams.get('longitude')
-    const phone = urlParams.get('phone')
-    const opening_hours = urlParams.get('opening_hours')
-    const delivery = urlParams.get('delivery')
-    const linkType = urlParams.get('linkType')
-    const link = urlParams.get('link')
+    const all = urlParams.get('all')
+    let name, address, city, zipcode, latitude, longitude, phone, opening_hours, delivery, linkType, link
+    if(all){
+        name = all
+        address = all
+        city = all
+        zipcode = all
+        latitude = all
+        longitude = all
+        phone = all
+        opening_hours = all
+        delivery = all
+        linkType = all
+        link = all
+    }else{
+        name = urlParams.get('name')
+        address = urlParams.get('address')
+        city = urlParams.get('city')
+        zipcode = urlParams.get('zipcode')
+        latitude = urlParams.get('latitude')
+        longitude = urlParams.get('longitude')
+        phone = urlParams.get('phone')
+        opening_hours = urlParams.get('opening_hours')
+        delivery = urlParams.get('delivery')
+        linkType = urlParams.get('linkType')
+        link = urlParams.get('link')
+    }
     db.exportFiles(name, address, city, zipcode, latitude, longitude, phone, opening_hours, delivery, linkType, link).then(() => {
         let jsonData = null
         setTimeout(() => {
             fs.readFile('/tmp/veganRestaurants.json', 'utf-8', (err, data) => {
+                if(data === '\\N\n') data = '[]'
                 jsonData = data
-                console.log(data)
                 res.send(jsonData)
             })
         }, 250)
