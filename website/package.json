@@ -8,7 +8,9 @@
   },
   "dependencies": {
     "pg": "^8.11.3",
-    "vue": "^3.2.13"
+    "primevue": "^3.40.1",
+    "vue": "^3.2.13",
+    "vue3-easy-data-table": "^1.5.47"
   },
   "devDependencies": {
     "@vue/cli-service": "^5.0.8",

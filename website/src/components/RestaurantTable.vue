@@ -1,4 +1,7 @@
 <script>
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import 'primevue/resources/themes/lara-light-teal/theme.css'
 export default {
   data() {
     return {
@@ -18,7 +21,10 @@ export default {
         {value: "link", text: "Link"},
       ],
       searchText: "",
-      restaurants: []
+      restaurants: [],
+      headers: [
+        {text: "Name", value: "name"}
+      ]
     }
   },
   async mounted() {
@@ -29,8 +35,22 @@ export default {
       e?.preventDefault()
       fetch(`http://localhost:3000/?${this.$data.searchOption}=${this.$data.searchText}`)
           .then(data => data.json())
-          .then(json => console.log(json))
+          .then(json => {
+            this.$data.restaurants = json
+            for(const restaurant of this.$data.restaurants){
+              let linkString = ''
+              for(const link of restaurant.websitelinks){
+                if(linkString !== '') linkString += ', '
+                linkString += `${link.link}`
+              }
+              restaurant.websitelinks = linkString
+            }
+          })
     }
+  },
+  components: {
+    DataTable,
+    Column
   }
 }
 </script>
@@ -45,11 +65,18 @@ export default {
     <button class="btn btn-primary" type="submit" @click="refreshData">Search</button>
   </form>
 
-  <table>
-    <tr id="searchSelector" v-for="restaurant in restaurants">
-      <td>{{ restaurant.name }}</td>
-    </tr>
-  </table>
+  <DataTable :value="this.$data.restaurants">
+    <Column field="name" header="Name" :sortable="true"></Column>
+    <Column field="address" header="Address" :sortable="true"></Column>
+    <Column field="city" header="City" :sortable="true"></Column>
+    <Column field="zipcode" header="Zipcode" :sortable="true"></Column>
+    <Column field="latitude" header="Latitude" :sortable="true"></Column>
+    <Column field="longitude" header="Longitude" :sortable="true"></Column>
+    <Column field="phone" header="Phone" :sortable="true"></Column>
+    <Column field="opening_hours" header="Opening hours" :sortable="true"></Column>
+    <Column field="delivery" header="Delivery" :sortable="true"></Column>
+    <Column field="websitelinks" header="Website links" :sortable="true"></Column>
+  </DataTable>
 
 </template>
 
