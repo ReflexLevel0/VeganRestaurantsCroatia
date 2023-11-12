@@ -12,8 +12,6 @@ class Db{
         const client = new pg.Client(dbConnString)
         client.connect()
 
-        let hasLinkType = linkType === null || linkType === undefined
-        let hasLink = link === null || link === undefined
         let hasName = name === null || name === undefined
         let hasAddress = address === null || address === undefined
         let hasCity = city === null || city === undefined
@@ -24,17 +22,8 @@ class Db{
         let hasPhone = phone === null || phone === undefined
         let hasOpeningHours = opening_hours === null || opening_hours === undefined
 
-        let linkViewWhere = `
-        ${hasLinkType ? '' : `LOWER(type) LIKE LOWER('%' || '${linkType}' || '%') OR`}
-        ${hasLink ? '' : `LOWER(link) LIKE LOWER('%' || '${link}' || '%')`}`
-        linkViewWhere = linkViewWhere.replace('\\n', '')
-        linkViewWhere = linkViewWhere.trim()
-        if(linkViewWhere.endsWith('OR')) linkViewWhere = linkViewWhere.substring(0, linkViewWhere.length - 2)
-        linkViewWhere = linkViewWhere === '' ? '' : `WHERE ${linkViewWhere}`
-
         let createLinkViewQuery = `CREATE OR REPLACE VIEW LinkView AS(SELECT restaurantId, type, link 
-        FROM RestaurantLink JOIN Link ON RestaurantLink.linkType = Link.id 
-        ${linkViewWhere})`
+        FROM RestaurantLink JOIN Link ON RestaurantLink.linkType = Link.id)`
         await client.query(createLinkViewQuery)
         let restaurantViewWhere = `
         ${hasName ? '' : `LOWER(r.name) LIKE LOWER('%' || '${name}' || '%') OR`}

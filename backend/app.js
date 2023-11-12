@@ -10,7 +10,13 @@ let corsOptions = {
 }
 app.use(cors(corsOptions))
 
+app.get('/json', (req, res) => res.download('../veganRestaurants.json'))
+app.get('/csv', (req, res) => res.download('../veganRestaurants.csv'))
+app.get('/filtered/json', (req, res) => res.download('/tmp/veganRestaurants.json'))
+app.get('/filtered/csv', (req, res) => res.download('/tmp/veganRestaurants.csv'))
+
 app.get('/', (req, res) => {
+    console.log('/')
     const urlParams = new URLSearchParams(req.url.split("?")[1])
     const all = urlParams.get('all')
     let name, address, city, zipcode, latitude, longitude, phone, opening_hours, delivery, linkType, link
@@ -50,9 +56,6 @@ app.get('/', (req, res) => {
         }, 250)
     })
 });
-
-app.get('/json', (req, res) => res.sendFile('/tmp/veganRestaurants.json'))
-app.get('/csv', (req, res) => res.sendFile('/tmp/veganRestaurants.csv'))
 
 app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);

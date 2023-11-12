@@ -16,15 +16,14 @@ export default {
         {value: "phone", text: "Phone"},
         {value: "opening_hours", text: "Opening hours"},
         {value: "delivery", text: "Delivery"},
-        {value: "city", text: "City"},
-        {value: "linkType", text: "Link type"},
-        {value: "link", text: "Link"},
+        {value: "city", text: "City"}
       ],
       searchText: "",
       restaurants: [],
       headers: [
         {text: "Name", value: "name"}
-      ]
+      ],
+      filtered: false
     }
   },
   async mounted() {
@@ -39,12 +38,15 @@ export default {
             this.$data.restaurants = json
             for(const restaurant of this.$data.restaurants){
               let linkString = ''
-              for(const link of restaurant.websitelinks){
-                if(linkString !== '') linkString += ', '
-                linkString += `${link.link}`
+              if(restaurant.websitelinks !== null) {
+                for(const link of restaurant.websitelinks){
+                  if(linkString !== '') linkString += ', '
+                  linkString += `${link.link}`
+                }
               }
               restaurant.websitelinks = linkString
             }
+            this.$data.filtered = this.$data.searchOption!=='all' || this.$data.searchText!==''
           })
     }
   },
@@ -64,6 +66,12 @@ export default {
     </select>
     <button class="btn btn-primary" type="submit" @click="refreshData">Search</button>
   </form>
+
+  <div v-if="filtered">
+    <a href="http://localhost:3000/filtered/json">Filtered JSON file</a>
+    <br/>
+    <a href="http://localhost:3000/filtered/csv">Filtered CSV file</a>
+  </div>
 
   <DataTable :value="this.$data.restaurants">
     <Column field="name" header="Name" :sortable="true"></Column>
