@@ -1,3 +1,6 @@
 .idea/
 commands.txt
 console.sql
+backend/commandString.txt
+backend/connectionString.txt
+backend/node_modules
