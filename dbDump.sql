@@ -78,6 +78,33 @@ CREATE TABLE public.link (
 ALTER TABLE public.link OWNER TO postgres;
 
 --
+-- Name: restaurantlink; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.restaurantlink (
+    restaurantid integer NOT NULL,
+    linktype integer NOT NULL,
+    link character varying(255)
+);
+
+
+ALTER TABLE public.restaurantlink OWNER TO postgres;
+
+--
+-- Name: linkview; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.linkview AS
+ SELECT restaurantlink.restaurantid,
+    link.type,
+    restaurantlink.link
+   FROM (public.restaurantlink
+     JOIN public.link ON ((restaurantlink.linktype = link.id)));
+
+
+ALTER TABLE public.linkview OWNER TO postgres;
+
+--
 -- Name: restaurant; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -98,23 +125,10 @@ CREATE TABLE public.restaurant (
 ALTER TABLE public.restaurant OWNER TO postgres;
 
 --
--- Name: restaurantlink; Type: TABLE; Schema: public; Owner: postgres
+-- Name: restaurantview; Type: VIEW; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.restaurantlink (
-    restaurantid integer NOT NULL,
-    linktype integer NOT NULL,
-    link character varying(255)
-);
-
-
-ALTER TABLE public.restaurantlink OWNER TO postgres;
-
---
--- Name: restaurantwithlinksview; Type: VIEW; Schema: public; Owner: postgres
---
-
-CREATE VIEW public.restaurantwithlinksview AS
+CREATE VIEW public.restaurantview AS
  SELECT r.id,
     r.name,
     r.address,
@@ -125,17 +139,37 @@ CREATE VIEW public.restaurantwithlinksview AS
     r.phone,
     r.opening_hours,
     r.delivery,
-    city.name AS city,
-    ( SELECT jsonb_agg(websitelinkquery.websitelinktype) AS jsonb_agg
-           FROM ( SELECT ROW(linkmerge.type, linkmerge.link)::public.linkexporttype AS websitelinktype
-                   FROM ( SELECT link.type,
-                            restaurantlink.link
-                           FROM (public.restaurantlink
-                             JOIN public.link ON ((restaurantlink.linktype = link.id)))
-                          WHERE (restaurantlink.restaurantid = r.id)) linkmerge) websitelinkquery) AS websitelinks
+    city.name AS city
    FROM (public.restaurant r
      JOIN public.city ON ((r.cityid = city.id)))
   ORDER BY r.id;
+
+
+ALTER TABLE public.restaurantview OWNER TO postgres;
+
+--
+-- Name: restaurantwithlinksview; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.restaurantwithlinksview AS
+ SELECT restaurantview.id,
+    restaurantview.name,
+    restaurantview.address,
+    restaurantview.cityid,
+    restaurantview.zipcode,
+    restaurantview.latitude,
+    restaurantview.longitude,
+    restaurantview.phone,
+    restaurantview.opening_hours,
+    restaurantview.delivery,
+    restaurantview.city,
+    ( SELECT jsonb_agg(websitelinkquery.websitelinktype) AS jsonb_agg
+           FROM ( SELECT ROW(linkmerge.type, linkmerge.link)::public.linkexporttype AS websitelinktype
+                   FROM ( SELECT linkview.type,
+                            linkview.link
+                           FROM public.linkview
+                          WHERE (linkview.restaurantid = restaurantview.id)) linkmerge) websitelinkquery) AS websitelinks
+   FROM public.restaurantview;
 
 
 ALTER TABLE public.restaurantwithlinksview OWNER TO postgres;
@@ -187,11 +221,10 @@ CREATE VIEW public.restaurantcsvview AS
     r.phone,
     r.opening_hours,
     r.delivery,
-    c.name AS city,
+    r.city,
     l.type AS linktype,
     rl.link
-   FROM (((public.restaurant r
-     JOIN public.city c ON ((r.cityid = c.id)))
+   FROM ((public.restaurantview r
      JOIN public.restaurantlink rl ON ((r.id = rl.restaurantid)))
      JOIN public.link l ON ((rl.linktype = l.id)))
   ORDER BY r.id, l.id;
