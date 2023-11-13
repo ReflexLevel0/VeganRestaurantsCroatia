@@ -59,6 +59,12 @@ export default {
 
 <template>
 
+  <div v-if="filtered">
+    <a href="http://localhost:3000/filtered/json">Filtered JSON file</a>
+    <br/>
+    <a href="http://localhost:3000/filtered/csv">Filtered CSV file</a>
+  </div>
+
   <form>
     <input class="input-group" type="text" placeholder="Zagreb" v-model="$data.searchText"/>
     <select class="form-select" v-model="$data.searchOption">
@@ -66,12 +72,6 @@ export default {
     </select>
     <button class="btn btn-primary" type="submit" @click="refreshData">Search</button>
   </form>
-
-  <div v-if="filtered">
-    <a href="http://localhost:3000/filtered/json">Filtered JSON file</a>
-    <br/>
-    <a href="http://localhost:3000/filtered/csv">Filtered CSV file</a>
-  </div>
 
   <DataTable :value="this.$data.restaurants">
     <Column field="name" header="Name" :sortable="true"></Column>
