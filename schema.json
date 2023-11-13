@@ -1,0 +1,196 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "http://example.com/example.json",
+    "type": "array",
+    "default": [],
+    "title": "Vegan Restaurants",
+    "description": "A list of vegan restaurants in Croatia",
+    "items": {
+        "type": "object",
+        "title": "Restaurants",
+        "description": "Object containing information about a restaurant",
+        "required": [
+            "id",
+            "city",
+            "name",
+            "address",
+            "zipcode",
+            "delivery",
+            "latitude",
+            "longitude",
+            "websitelinks"
+        ],
+        "properties": {
+            "id": {
+                "type": "integer",
+                "title": "ID",
+                "description": "Unique identifier of the restaurant",
+                "examples": [1,2,3]
+            },
+            "city": {
+                "type": "string",
+                "title": "City",
+                "description": "Name of the city in which the restaurant is located in",
+                "example": ["Zagreb","Split","Zadar"]
+            },
+            "name": {
+                "type": "string",
+                "title": "Name",
+                "description": "Name of the restaurant",
+                "examples": ["Restoran Vegehop","Vege Fino za sve"]
+            },
+            "phone": {
+                "type": "string",
+                "title": "Phone",
+                "description": "Phone number which the restaurant uses",
+                "examples": ["014649400","0915141274","0976602744"]
+            },
+            "address": {
+                "type": "string",
+                "title": "Address",
+                "title": "Address on which the restaurant is located on",
+                "examples": ["Vlaška ulica 79","Ulica Pavla Radića 9","Ilica 75"]
+            },
+            "zipcode": {
+                "type": "integer",
+                "title": "Zipcode",
+                "description": "Zipcode of the area",
+                "examples": [10000,21000]
+            },
+            "delivery": {
+                "type": "boolean",
+                "title": "Delivery",
+                "description": "Indicates whether or not the restaurant provides delivery services",
+                "examples": [true,false]
+            },
+            "latitude": {
+                "type": "number",
+                "title": "Latitude",
+                "description": "Latitude location of the restaurant",
+                "examples": [45.81462343,43.50930416]
+            },
+            "longitude": {
+                "type": "number",
+                "title": "Longitude",
+                "description": "Longitude location of the restaurant",
+                "examples": [15.98823879,15.95967074]
+            },
+            "websitelinks": {
+                "type": "array",
+                "title": "Website links",
+                "description": "An array of website links used by the restaurant",
+                "items": {
+                    "type": "object",
+                    "title": "Object containing information about a website link",
+                    "required": [
+                        "link",
+                        "type"
+                    ],
+                    "properties": {
+                        "link": {
+                            "type": "string",
+                            "title": "Website link",
+                            "examples": [
+                                "vegehop.hr",
+                                "facebook.com/vegehop",
+                                "instagram.com/vegehop_restaurant",
+                                "youtube.com/user/Vegehop",
+                                "tiktok.com/@oaza.joyful.kitchen",
+                                "linkedin.com/company/oaza-joyful-kitchen",
+                                "tripadvisor.com/Restaurant_Review-g303802-d14997286-Reviews-BioMania_Street_Food-Bol_Brac_Island_Split_Dalmatia_County_Dalmatia.html"
+                            ]
+                        },
+                        "type": {
+                            "type": "string",
+                            "title": "The type Schema",
+                            "examples": [
+                                "website",
+                                "facebook",
+                                "instagram",
+                                "youtube",
+                                "tiktok",
+                                "linkedin",
+                                "tripadvisor",
+                                "X"
+                            ]
+                        }
+                    },
+                    "examples": [{
+                        "link": "vegehop.hr",
+                        "type": "website"
+                    },
+                    {
+                        "link": "facebook.com/vegehop",
+                        "type": "facebook"
+                    },
+                    {
+                        "link": "instagram.com/vegehop_restaurant",
+                        "type": "instagram"
+                    }]
+                },
+            },
+            "opening_hours": {
+                "type": "string",
+                "title": "Opening hours",
+                "description": "Contains information about opening and closing times of the restaurants",
+                "examples": [
+                    "Mon-Sat 12:00-20:00",
+                    "Tue-Sat 09:00-22:00,Sun 09:00-16:00",
+                    "Mon-Thu 13:00-21:00,Sat 13:00-21:00,Sun 10:00-22:00"
+                ]
+            }
+        },
+        "examples": [{
+            "id": 1,
+            "city": "Zagreb",
+            "name": "Restoran Vegehop",
+            "phone": "014649400",
+            "address": "Vlaška ulica 79",
+            "zipcode": 10000,
+            "delivery": true,
+            "latitude": 45.81462343,
+            "longitude": 15.98823879,
+            "websitelinks": [{
+                "link": "vegehop.hr",
+                "type": "website"
+            },
+            {
+                "link": "facebook.com/vegehop",
+                "type": "facebook"
+            },
+            {
+                "link": "instagram.com/vegehop_restaurant",
+                "type": "instagram"
+            },
+            {
+                "link": "youtube.com/user/Vegehop",
+                "type": "youtube"
+            }],
+            "opening_hours": "Mon-Sat 12:00-20:00"
+        },
+        {
+            "id": 2,
+            "city": "Zagreb",
+            "name": "Gajbica",
+            "phone": "0915141274",
+            "address": "Vlaška ulica 7",
+            "zipcode": 10000,
+            "delivery": true,
+            "latitude": 45.81391498,
+            "longitude": 15.97946271,
+            "websitelinks": [{
+                "link": "gajbica.eatbu.com",
+                "type": "website"
+            },
+            {
+                "link": "facebook.com/gajbicahr",
+                "type": "facebook"
+            },
+            {
+                "link": "instagram.com/gajbica_zg",
+                "type": "instagram"
+            }],
+            "opening_hours": "Mon-Sat 11:00-18:00"
+        }]
+    }
+}
