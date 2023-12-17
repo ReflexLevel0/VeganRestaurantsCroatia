@@ -84,19 +84,23 @@ public class PostgreDb : IDb
 		return null;
 	}
 
-	public Task PostCity(City city)
+	public async Task PostCity(City city)
 	{
-		throw new NotImplementedException();
+		await using var cmd = _dataSource.CreateCommand(CreateCityInsertQuery(city));
+		await cmd.ExecuteNonQueryAsync(); 
 	}
 
-	public Task PutCity(City city)
+	public async Task PutCity(City city)
 	{
-		throw new NotImplementedException();
+		await using var cmd = _dataSource.CreateCommand(CreateCityInsertQuery(city) +
+		                                                $" ON CONFLICT(id) DO UPDATE SET id={city.Id},name='{city.Name}')");
+		await cmd.ExecuteNonQueryAsync();
 	}
 
-	public Task DeleteCity(int id)
+	public async Task DeleteCity(int id)
 	{
-		throw new NotImplementedException();
+		await using var cmd = _dataSource.CreateCommand($"DELETE FROM city WHERE id={id}");
+		await cmd.ExecuteNonQueryAsync();
 	}
 
 	private static Restaurant ReaderToRestaurant(NpgsqlDataReader reader)
@@ -125,5 +129,10 @@ public class PostgreDb : IDb
 	{
 		return "INSERT INTO restaurant(id,name,address,zipcode,latitude,longitude,phone,opening_hours,delivery,cityid) " +
 		       $"VALUES({restaurant.Id}, '{restaurant.Name}', '{restaurant.Address}', {restaurant.Zipcode}, {restaurant.Latitude}, {restaurant.Longitude}, '{restaurant.Phone}', '{restaurant.OpeningHours}', {restaurant.Delivery}, {restaurant.CityId})";
+	}
+
+	private static string CreateCityInsertQuery(City city)
+	{
+		return $"INSERT INTO city(id,name) VALUES({city.Id}, '{city.Name}')";
 	}
 }
