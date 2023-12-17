@@ -10,6 +10,10 @@ public class CityController(IDb db) : ControllerBase
 {
 	private ActionResult<ApiResponseWrapper> BadRequestError => StatusCode(400, new ApiResponseWrapper("Bad Request", "Error happened in processing your request", null));
 	
+	/// <summary>
+	/// Returns all cities
+	/// </summary>
+	/// <response code="200">Cities fetched</response>
 	[HttpGet]
 	public async Task<ActionResult<ApiResponseWrapper>> GetCities()
 	{
@@ -22,6 +26,12 @@ public class CityController(IDb db) : ControllerBase
 		return Ok(new ApiResponseWrapper("OK", "Fetched city objects", JsonConvert.SerializeObject(cities)));
 	}
 	
+	/// <summary>
+	/// Returns a specific city
+	/// </summary>
+	/// <param name="id">ID of the city that is to be returned</param>
+	/// <response code="200">City fetched</response>
+	/// <response code="404">City with specified ID not found</response>
 	[HttpGet("{id}")]
 	public async Task<ActionResult<ApiResponseWrapper>> GetCity(int id)
 	{
@@ -31,6 +41,13 @@ public class CityController(IDb db) : ControllerBase
 			Ok(new ApiResponseWrapper("OK", "Fetched city with specified id", JsonConvert.SerializeObject(city)));
 	}
 	
+	/// <summary>
+	/// Creates a new city
+	/// </summary>
+	/// <param name="city">City data</param>
+	/// <response code="200">City created</response>
+	/// <response code="400">Generic error</response>
+	/// <response code="409">Tried to insert city with ID that already exists</response>
 	[HttpPost]
 	public async Task<ActionResult<ApiResponseWrapper>> PostCity(City city)
 	{
@@ -47,6 +64,12 @@ public class CityController(IDb db) : ControllerBase
 		}
 	}
 	
+	/// <summary>
+	/// Creates or updates a city
+	/// </summary>
+	/// <param name="city">City to be created or updated</param>
+	/// <response code="200">City created/updated</response>
+	/// <response code="400">Generic error</response>
 	[HttpPut]
 	public async Task<ActionResult<ApiResponseWrapper>> PutCity(City city)
 	{
@@ -62,6 +85,13 @@ public class CityController(IDb db) : ControllerBase
 		}
 	}
 	
+	/// <summary>
+	/// Deletes the specified city
+	/// </summary>
+	/// <param name="id">ID of the city to be deleted</param>
+	/// <response code="200">City deleted/updated</response>
+	/// <response code="400">Generic error</response>
+	/// <response code="404">City with specified ID not found</response>
 	[HttpDelete("{id}")]
 	public async Task<ActionResult<ApiResponseWrapper>> DeleteCity(int id)
 	{

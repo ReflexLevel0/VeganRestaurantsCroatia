@@ -10,6 +10,10 @@ public class RestaurantController(IDb db) : ControllerBase
 {
 	private ActionResult<ApiResponseWrapper> BadRequestError => StatusCode(400, new ApiResponseWrapper("Bad Request", "Error happened in processing your request", null));
 
+	/// <summary>
+	/// Returns all restaurants
+	/// </summary>
+	/// <response code="200">Restaurants fetched</response>
 	[HttpGet]
 	public async Task<ActionResult<ApiResponseWrapper>> GetRestaurants()
 	{
@@ -22,6 +26,12 @@ public class RestaurantController(IDb db) : ControllerBase
 		return Ok(new ApiResponseWrapper("OK", "Fetched restaurant objects", JsonConvert.SerializeObject(restaurants)));
 	}
 
+	/// <summary>
+	/// Returns a specific restaurant
+	/// </summary>
+	/// <param name="id">ID of the restaurant that is to be returned</param>
+	/// <response code="200">Restaurant fetched</response>
+	/// <response code="404">Restaurant with specified ID not found</response>
 	[HttpGet("{id}")]
 	public async Task<ActionResult<ApiResponseWrapper>> GetRestaurant(int id)
 	{
@@ -29,6 +39,13 @@ public class RestaurantController(IDb db) : ControllerBase
 		return restaurant == null ? NotFound(new ApiResponseWrapper("Not Found", "Restaurant with specified id not found", null)) : Ok(new ApiResponseWrapper("OK", "Fetched restaurant with specified id", JsonConvert.SerializeObject(restaurant)));
 	}
 
+	/// <summary>
+	/// Creates a new restaurant
+	/// </summary>
+	/// <param name="restaurant">Restaurant data</param>
+	/// <response code="200">Restaurant created</response>
+	/// <response code="400">Generic error</response>
+	/// <response code="409">Tried to insert restaurant with ID that already exists</response>
 	[HttpPost]
 	public async Task<ActionResult<ApiResponseWrapper>> PostRestaurant(Restaurant restaurant)
 	{
@@ -45,6 +62,12 @@ public class RestaurantController(IDb db) : ControllerBase
 		}
 	}
 
+	/// <summary>
+	/// Creates or updates a restaurant
+	/// </summary>
+	/// <param name="restaurant">Restaurant to be created or updated</param>
+	/// <response code="200">Restaurant created/updated</response>
+	/// <response code="400">Generic error</response>
 	[HttpPut]
 	public async Task<ActionResult<ApiResponseWrapper>> PutRestaurant(Restaurant restaurant)
 	{
@@ -60,6 +83,13 @@ public class RestaurantController(IDb db) : ControllerBase
 		}
 	}
 
+	/// <summary>
+	/// Deletes the specified restaurant
+	/// </summary>
+	/// <param name="id">ID of the restaurant to be deleted</param>
+	/// <response code="200">Restaurant deleted/updated</response>
+	/// <response code="400">Generic error</response>
+	/// <response code="404">Restaurant with specified ID not found</response>
 	[HttpDelete("{id}")]
 	public async Task<ActionResult<ApiResponseWrapper>> DeleteRestaurant(int id)
 	{
