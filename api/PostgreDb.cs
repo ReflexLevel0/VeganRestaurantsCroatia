@@ -41,6 +41,27 @@ public class PostgreDb : IDb
 		return null;
 	}
 
+	public async Task PostRestaurant(Restaurant restaurant)
+	{
+		await using var cmd = _dataSource.CreateCommand(CreateRestaurantInsertQuery(restaurant));
+		await cmd.ExecuteNonQueryAsync();
+	}
+
+	public async Task PutRestaurant(Restaurant restaurant)
+	{
+		string insertQuery = CreateRestaurantInsertQuery(restaurant) + " ON CONFLICT(id) DO UPDATE SET " +
+		                     $"name='{restaurant.Name}',address='{restaurant.Address}',cityid={restaurant.CityId},zipcode={restaurant.Zipcode},latitude={restaurant.Latitude},longitude={restaurant.Longitude},phone='{restaurant.Phone}',opening_hours='{restaurant.OpeningHours}',delivery={restaurant.Delivery}";
+		await using var cmd = _dataSource.CreateCommand(insertQuery);
+		await cmd.ExecuteNonQueryAsync();
+	}
+
+	public async Task DeleteRestaurant(int id)
+	{
+		string deleteQuery = $"DELETE FROM restaurant WHERE id={id}";
+		await using var cmd = _dataSource.CreateCommand(deleteQuery);
+		await cmd.ExecuteNonQueryAsync();
+	}
+
 	public async IAsyncEnumerable<City> GetCities()
 	{
 		await using var cmd = _dataSource.CreateCommand(_getCitiesQuery);
@@ -63,6 +84,21 @@ public class PostgreDb : IDb
 		return null;
 	}
 
+	public Task PostCity(City city)
+	{
+		throw new NotImplementedException();
+	}
+
+	public Task PutCity(City city)
+	{
+		throw new NotImplementedException();
+	}
+
+	public Task DeleteCity(int id)
+	{
+		throw new NotImplementedException();
+	}
+
 	private static Restaurant ReaderToRestaurant(NpgsqlDataReader reader)
 	{
 		int id = reader.GetInt32(0);
@@ -83,5 +119,11 @@ public class PostgreDb : IDb
 		int id = reader.GetInt32(0);
 		string name = reader.GetString(1);
 		return new City(id, name);
+	}
+
+	private static string CreateRestaurantInsertQuery(Restaurant restaurant)
+	{
+		return "INSERT INTO restaurant(id,name,address,zipcode,latitude,longitude,phone,opening_hours,delivery,cityid) " +
+		       $"VALUES({restaurant.Id}, '{restaurant.Name}', '{restaurant.Address}', {restaurant.Zipcode}, {restaurant.Latitude}, {restaurant.Longitude}, '{restaurant.Phone}', '{restaurant.OpeningHours}', {restaurant.Delivery}, {restaurant.CityId})";
 	}
 }
