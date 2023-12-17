@@ -4,3 +4,6 @@ console.sql
 backend/commandString.txt
 backend/connectionString.txt
 backend/node_modules
+api/bin/*
+api/obj/*
+api/dbConnectionString.txt
