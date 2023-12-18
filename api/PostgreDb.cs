@@ -127,7 +127,6 @@ public class PostgreDb : IDb
 		//Getting link from the database
 		await foreach (var l in GetLinks(link.RestaurantId, link.LinkType))
 		{
-			Console.WriteLine("inside");
 			return l;
 		}
 
@@ -137,6 +136,20 @@ public class PostgreDb : IDb
 
 	public async Task<LinkDTO> PutLink(LinkDTO link)
 	{
+		//Checking if link already exists
+		bool foundLink = false;
+		await foreach (var l in GetLinks(link.RestaurantId, link.LinkType))
+		{
+			foundLink = true;
+			break;
+		}
+
+		//Inserting the link if one doesnt exist
+		if (foundLink == false)
+		{
+			return await PostLink(link);
+		}
+		
 		//Inserting the link (or updating if it conflicts with an existing link)
 		int linkTypeId = await GetLinkTypeId(link.LinkType);
 		string updateQuery = $"INSERT INTO restaurantlink(restaurantid,linktype,link) " +
@@ -157,9 +170,12 @@ public class PostgreDb : IDb
 		return result;
 	}
 
-	public Task DeleteLink(int restaurantId, string type)
+	public async Task DeleteLink(DeleteLinkDTO link)
 	{
-		throw new NotImplementedException();
+		string deleteQuery = $"DELETE FROM restaurantlink WHERE restaurantid={link.RestaurantId} AND linktype={await GetLinkTypeId(link.LinkType)}";
+		await using var cmd = _dataSource.CreateCommand(deleteQuery); 
+		int rowsAffected = await cmd.ExecuteNonQueryAsync();
+		if(rowsAffected == 0) throw new Exception("id not found");
 	}
 
 	private static RestaurantDTO ReaderToRestaurant(NpgsqlDataReader reader)

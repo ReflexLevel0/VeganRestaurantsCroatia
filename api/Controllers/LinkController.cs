@@ -42,20 +42,29 @@ public class LinkController(IDb db) : ControllerBase
 	{
 		try
 		{
-			LinkDTO? li = null;
-			await foreach (var l in db.GetLinks(link.RestaurantId, link.LinkType))
-			{
-				li = l;
-				break;
-			}
-			if (li == null) return NotFound(new ApiResponseWrapper("Not Found", "Link with specified id not found", null));
-			li = await db.PutLink(link);
-			return Ok(new ApiResponseWrapper("OK", "Updated Link", JsonConvert.SerializeObject(li)));
+			var l = await db.PutLink(link);
+			return Ok(new ApiResponseWrapper("OK", "Updated Link", JsonConvert.SerializeObject(l)));
 		}
 		catch (Exception ex)
 		{
 			ControllerHelper.PrintError(ex);
 			return BadRequestError;
+		}
+	}
+
+	[HttpDelete]
+	public async Task<ActionResult<ApiResponseWrapper>> DeleteLink(DeleteLinkDTO link)
+	{
+		try
+		{
+			await db.DeleteLink(link);
+			return Ok(new ApiResponseWrapper("OK", "Deleted link", null));
+		}
+		catch (Exception ex)
+		{
+			ControllerHelper.PrintError(ex);
+			if (ex.Message.Contains("id not found") == false) return BadRequestError;
+			return NotFound(new ApiResponseWrapper("Not Found", "Link with specified restaurant id and link type not found", null));
 		}
 	}
 }

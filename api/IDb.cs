@@ -13,5 +13,5 @@ public interface IDb
 	IAsyncEnumerable<LinkDTO> GetLinks(int? restaurantId = null, string? type = null);
 	Task<LinkDTO> PostLink(LinkDTO link);
 	Task<LinkDTO> PutLink(LinkDTO link);
-	Task DeleteLink(int restaurantId, string type);
+	Task DeleteLink(DeleteLinkDTO link);
 }
