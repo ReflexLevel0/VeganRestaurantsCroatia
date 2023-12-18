@@ -35,7 +35,7 @@ public class RestaurantController(IDb db) : ControllerBase
 	[HttpGet("{id}")]
 	public async Task<ActionResult<ApiResponseWrapper>> GetRestaurant(int id)
 	{
-		var restaurant = await db.GetRestaurant(id);
+		var restaurant = await db.GetRestaurantById(id);
 		return restaurant == null ? NotFound(new ApiResponseWrapper("Not Found", "Restaurant with specified id not found", null)) : Ok(new ApiResponseWrapper("OK", "Fetched restaurant with specified id", JsonConvert.SerializeObject(restaurant)));
 	}
 
@@ -50,8 +50,8 @@ public class RestaurantController(IDb db) : ControllerBase
 	{
 		try
 		{
-			await db.PostRestaurant(restaurant);
-			return Ok(new ApiResponseWrapper("CREATED", "Added new restaurant", null));
+			var r = await db.PostRestaurant(restaurant);
+			return Ok(new ApiResponseWrapper("CREATED", "Added new restaurant", JsonConvert.SerializeObject(r)));
 		}
 		catch (Exception ex)
 		{
@@ -71,8 +71,8 @@ public class RestaurantController(IDb db) : ControllerBase
 	{
 		try
 		{
-			await db.PutRestaurant(restaurant);
-			return Ok(new ApiResponseWrapper("OK", "Updated restaurant", null));
+			var r = await db.PutRestaurant(restaurant);
+			return Ok(new ApiResponseWrapper("OK", "Updated restaurant", JsonConvert.SerializeObject(r)));
 		}
 		catch(Exception ex)
 		{
@@ -99,7 +99,7 @@ public class RestaurantController(IDb db) : ControllerBase
 		catch (Exception ex)
 		{
 			ControllerHelper.PrintError(ex);
-			if (ex.Message.Contains("") == false) return BadRequestError;
+			if (ex.Message.Contains("id not found") == false) return BadRequestError;
 			return NotFound(new ApiResponseWrapper("Not Found", "Restaurant with specified id not found", null));
 		}
 	}
