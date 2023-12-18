@@ -17,6 +17,7 @@ public class LinkController(IDb db) : ControllerBase
 	/// <param name="type">Type of links that will be returned (if null, links of all types will be returned)</param>
 	/// <response code="200">Links fetched</response>
 	[HttpGet]
+	[Produces("application/json")]
 	public async Task<ActionResult<ApiResponseWrapper>> GetLinks(int? restaurantId, string? type)
 	{
 		var links = new List<LinkDTO?>();
@@ -35,6 +36,7 @@ public class LinkController(IDb db) : ControllerBase
 	/// <response code="200">Restaurant created</response>
 	/// <response code="400">Generic error</response>
 	[HttpPost]
+	[Produces("application/json")]
 	public async Task<ActionResult<ApiResponseWrapper>> PostLink(LinkDTO link)
 	{
 		try
@@ -56,6 +58,7 @@ public class LinkController(IDb db) : ControllerBase
 	/// <response code="200">Restaurant created/updated</response>
 	/// <response code="400">Generic error</response>
 	[HttpPut]
+	[Produces("application/json")]
 	public async Task<ActionResult<ApiResponseWrapper>> PutLink(LinkDTO link)
 	{
 		try
@@ -78,6 +81,7 @@ public class LinkController(IDb db) : ControllerBase
 	/// <response code="400">Generic error</response>
 	/// <response code="404">Restaurant with specified ID not found</response>
 	[HttpDelete]
+	[Produces("application/json")]
 	public async Task<ActionResult<ApiResponseWrapper>> DeleteLink(DeleteLinkDTO link)
 	{
 		try

@@ -5,6 +5,7 @@ public class LinkDTO(int restaurantId, string linkType, string link)
 	/// <summary>
 	/// ID of the restaurant to which this link belongs to
 	/// </summary>
+	/// <example>2</example>
 	public int RestaurantId { get; set; } = restaurantId;
 	
 	/// <summary>

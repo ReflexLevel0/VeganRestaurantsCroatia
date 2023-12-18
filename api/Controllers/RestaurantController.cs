@@ -15,6 +15,7 @@ public class RestaurantController(IDb db) : ControllerBase
 	/// </summary>
 	/// <response code="200">Restaurants fetched</response>
 	[HttpGet]
+	[Produces("application/json")]
 	public async Task<ActionResult<ApiResponseWrapper>> GetRestaurants()
 	{
 		var restaurants = new List<RestaurantDTO?>();
@@ -33,6 +34,7 @@ public class RestaurantController(IDb db) : ControllerBase
 	/// <response code="200">Restaurant fetched</response>
 	/// <response code="404">Restaurant with specified ID not found</response>
 	[HttpGet("{id}")]
+	[Produces("application/json")]
 	public async Task<ActionResult<ApiResponseWrapper>> GetRestaurant(int id)
 	{
 		var restaurant = await db.GetRestaurantById(id);
@@ -46,6 +48,7 @@ public class RestaurantController(IDb db) : ControllerBase
 	/// <response code="200">Restaurant created</response>
 	/// <response code="400">Generic error</response>
 	[HttpPost]
+	[Produces("application/json")]
 	public async Task<ActionResult<ApiResponseWrapper>> PostRestaurant(NewRestaurantDTO restaurant)
 	{
 		try
@@ -68,6 +71,7 @@ public class RestaurantController(IDb db) : ControllerBase
 	/// <response code="200">Restaurant created/updated</response>
 	/// <response code="400">Generic error</response>
 	[HttpPut("{id}")]
+	[Produces("application/json")]
 	public async Task<ActionResult<ApiResponseWrapper>> PutRestaurant(int id, NewRestaurantDTO restaurant)
 	{
 		return await PutRestaurant(new RestaurantDTO(id, restaurant.Name, restaurant.Address, restaurant.Zipcode, restaurant.Latitude, restaurant.Longitude, restaurant.Phone, restaurant.OpeningHours, restaurant.Delivery, restaurant.City));
@@ -80,6 +84,7 @@ public class RestaurantController(IDb db) : ControllerBase
 	/// <response code="200">Restaurant created/updated</response>
 	/// <response code="400">Generic error</response>
 	[HttpPut]
+	[Produces("application/json")]
 	public async Task<ActionResult<ApiResponseWrapper>> PutRestaurant(RestaurantDTO restaurant)
 	{
 		try
@@ -108,6 +113,7 @@ public class RestaurantController(IDb db) : ControllerBase
 	/// <response code="400">Generic error</response>
 	/// <response code="404">Restaurant with specified ID not found</response>
 	[HttpDelete("{id}")]
+	[Produces("application/json")]
 	public async Task<ActionResult<ApiResponseWrapper>> DeleteRestaurant(int id)
 	{
 		try
