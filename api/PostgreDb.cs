@@ -9,7 +9,6 @@ public class PostgreDb : IDb
 
 	private readonly string _getRestaurantsQuery = $"SELECT r.id, r.name, address, zipcode, latitude, longitude, phone, opening_hours, delivery, c.name as cityName " +
 	                                              "FROM restaurant r JOIN city c ON r.cityId=c.id";
-	private readonly string _getCitiesQuery = "SELECT id, name FROM city";
 	
 	public PostgreDb(string connString)
 	{
@@ -117,13 +116,6 @@ public class PostgreDb : IDb
 		string cityName = reader.GetString(9);
 		return new RestaurantDTO(id, name, address, zipcode, latitude, longitude, phone, openingHours, delivery, cityName);
 	}
-
-	// private async Task<string> CreateRestaurantInsertQuery(NewRestaurantDTO newRestaurant)
-	// {
-	// 	var fullRestaurant = newRestaurant is RestaurantDTO ? (RestaurantDTO)newRestaurant : null;
-	// 	return $"INSERT INTO restaurant({(fullRestaurant == null ? "" : "id,")}name,address,zipcode,latitude,longitude,phone,opening_hours,delivery,cityid) " +
-	// 	       $"VALUES({(fullRestaurant == null ? "" : $"{fullRestaurant.Id},")}'{newRestaurant.Name}', '{newRestaurant.Address}', {newRestaurant.Zipcode}, {newRestaurant.Latitude}, {newRestaurant.Longitude}, {(newRestaurant.Phone == null ? "null" : $"'{newRestaurant.Phone}'")}, {(newRestaurant.OpeningHours == null ? "null" : $"'{newRestaurant.OpeningHours}'")}, {newRestaurant.Delivery}, {await GetCityId(newRestaurant.City)})";
-	// }
 
 	private async Task<int> GetCityId(string name)
 	{
