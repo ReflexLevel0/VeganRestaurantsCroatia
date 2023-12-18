@@ -45,9 +45,8 @@ public class RestaurantController(IDb db) : ControllerBase
 	/// <param name="restaurant">Restaurant data</param>
 	/// <response code="200">Restaurant created</response>
 	/// <response code="400">Generic error</response>
-	/// <response code="409">Tried to insert restaurant with ID that already exists</response>
 	[HttpPost]
-	public async Task<ActionResult<ApiResponseWrapper>> PostRestaurant(Restaurant restaurant)
+	public async Task<ActionResult<ApiResponseWrapper>> PostRestaurant(RestaurantBase restaurant)
 	{
 		try
 		{
@@ -57,8 +56,7 @@ public class RestaurantController(IDb db) : ControllerBase
 		catch (Exception ex)
 		{
 			ControllerHelper.PrintError(ex);
-			if (ex.Message.Contains("duplicate key") == false) return BadRequestError;
-			return Conflict(new ApiResponseWrapper("CONFLICT", "Object already exists", null));
+			return BadRequestError;
 		}
 	}
 
