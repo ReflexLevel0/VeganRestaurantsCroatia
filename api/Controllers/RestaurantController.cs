@@ -17,7 +17,7 @@ public class RestaurantController(IDb db) : ControllerBase
 	[HttpGet]
 	public async Task<ActionResult<ApiResponseWrapper>> GetRestaurants()
 	{
-		var restaurants = new List<Restaurant?>();
+		var restaurants = new List<RestaurantDTO?>();
 		await foreach (var restaurant in db.GetRestaurants())
 		{
 			restaurants.Add(restaurant);
@@ -46,7 +46,7 @@ public class RestaurantController(IDb db) : ControllerBase
 	/// <response code="200">Restaurant created</response>
 	/// <response code="400">Generic error</response>
 	[HttpPost]
-	public async Task<ActionResult<ApiResponseWrapper>> PostRestaurant(RestaurantBase restaurant)
+	public async Task<ActionResult<ApiResponseWrapper>> PostRestaurant(NewRestaurantDTO restaurant)
 	{
 		try
 		{
@@ -61,20 +61,39 @@ public class RestaurantController(IDb db) : ControllerBase
 	}
 
 	/// <summary>
+	/// Creates or updates a restaurant with a specific ID
+	/// </summary>
+	/// <param name="id">ID of the restaurant to be updated</param>
+	/// <param name="restaurant">Restaurant data</param>
+	/// <response code="200">Restaurant created/updated</response>
+	/// <response code="400">Generic error</response>
+	[HttpPut("{id}")]
+	public async Task<ActionResult<ApiResponseWrapper>> PutRestaurant(int id, NewRestaurantDTO restaurant)
+	{
+		return await PutRestaurant(new RestaurantDTO(id, restaurant.Name, restaurant.Address, restaurant.Zipcode, restaurant.Latitude, restaurant.Longitude, restaurant.Phone, restaurant.OpeningHours, restaurant.Delivery, restaurant.City));
+	}
+
+	/// <summary>
 	/// Creates or updates a restaurant
 	/// </summary>
 	/// <param name="restaurant">Restaurant to be created or updated</param>
 	/// <response code="200">Restaurant created/updated</response>
 	/// <response code="400">Generic error</response>
 	[HttpPut]
-	public async Task<ActionResult<ApiResponseWrapper>> PutRestaurant(Restaurant restaurant)
+	public async Task<ActionResult<ApiResponseWrapper>> PutRestaurant(RestaurantDTO restaurant)
 	{
 		try
 		{
-			var r = await db.PutRestaurant(restaurant);
+			//Create new restaurant
+			if (restaurant.Id == null) return await PostRestaurant(restaurant);
+
+			//Upate existing restaurant
+			var r = await db.GetRestaurantById((int)restaurant.Id);
+			if (r == null) return NotFound(new ApiResponseWrapper("Not Found", "Restaurant with specified id not found", null));
+			r = await db.PutRestaurant(restaurant);
 			return Ok(new ApiResponseWrapper("OK", "Updated restaurant", JsonConvert.SerializeObject(r)));
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			ControllerHelper.PrintError(ex);
 			return BadRequestError;

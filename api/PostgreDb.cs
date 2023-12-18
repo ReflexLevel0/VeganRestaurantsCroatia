@@ -19,7 +19,7 @@ public class PostgreDb : IDb
 
 	public async Task<NpgsqlConnection> OpenConnectionAsync() => await _dataSource.OpenConnectionAsync();
 
-	public async IAsyncEnumerable<Restaurant> GetRestaurants()
+	public async IAsyncEnumerable<RestaurantDTO> GetRestaurants()
 	{
 		await using var cmd = _dataSource.CreateCommand(_getRestaurantsQuery);
 		await using var reader = await cmd.ExecuteReaderAsync();
@@ -29,7 +29,7 @@ public class PostgreDb : IDb
 		}
 	}
 
-	public async Task<Restaurant?> GetRestaurantById(int id)
+	public async Task<RestaurantDTO?> GetRestaurantById(int id)
 	{
 		await using var cmd = _dataSource.CreateCommand($"{_getRestaurantsQuery} WHERE r.id = {id}");
 		await using var reader = await cmd.ExecuteReaderAsync();
@@ -41,7 +41,7 @@ public class PostgreDb : IDb
 		return null;
 	}
 	
-	public async Task<Restaurant?> GetRestaurantByName(string name)
+	public async Task<RestaurantDTO?> GetRestaurantByName(string name)
 	{
 		await using var cmd = _dataSource.CreateCommand($"{_getRestaurantsQuery} WHERE r.name = '{name}'");
 		await using var reader = await cmd.ExecuteReaderAsync();
@@ -53,23 +53,43 @@ public class PostgreDb : IDb
 		return null;
 	}
 
-	public async Task<Restaurant> PostRestaurant(RestaurantBase restaurant)
+	public async Task<RestaurantDTO> PostRestaurant(NewRestaurantDTO restaurant)
 	{
-		await using var cmd = _dataSource.CreateCommand(await CreateRestaurantInsertQuery(restaurant));
-		await cmd.ExecuteNonQueryAsync();
+		//Inserting restaurant into the database
+		string insertQuery = $"INSERT INTO restaurant(name,address,zipcode,latitude,longitude,phone,opening_hours,delivery,cityid) " +
+		                     $"VALUES('{restaurant.Name}', '{restaurant.Address}', {restaurant.Zipcode}, {restaurant.Latitude}, {restaurant.Longitude}, {StringToSqlString(restaurant.Phone)}, {StringToSqlString(restaurant.OpeningHours)}, {restaurant.Delivery}, {await GetCityId(restaurant.City)})";
+		await using var cmd = _dataSource.CreateCommand(insertQuery);
+		int changedRows = await cmd.ExecuteNonQueryAsync();
+		
+		//Checking if insertion has gone through
 		var r = await GetRestaurantByName(restaurant.Name);
-		if (r == null) throw new Exception("Restaurant object not added to database");
+		if (changedRows == 0 || r == null) throw new Exception("restaurant not found");
 		return r;
 	}
 	
-	public async Task<Restaurant> PutRestaurant(Restaurant restaurant)
+	public async Task<RestaurantDTO> PutRestaurant(RestaurantDTO restaurant)
 	{
-		string insertQuery = await CreateRestaurantInsertQuery(restaurant) + " ON CONFLICT(id) DO UPDATE SET " +
-		                     $"name='{restaurant.Name}',address='{restaurant.Address}',cityid={await GetCityId(restaurant.City)},zipcode={restaurant.Zipcode},latitude={restaurant.Latitude},longitude={restaurant.Longitude},phone='{restaurant.Phone}',opening_hours='{restaurant.OpeningHours}',delivery={restaurant.Delivery}";
-		await using var cmd = _dataSource.CreateCommand(insertQuery);
-		await cmd.ExecuteNonQueryAsync();
+		//Inserting the restaurant into the database if ID isn't specified
+		if (restaurant.Id == null) return await PostRestaurant(restaurant);
+		
+		//Updating the existing restaurant if ID is specified
+		string updateQuery = $"UPDATE restaurant SET " +
+		                     $"name={StringToSqlString(restaurant.Name)}," +
+		                     $"address={StringToSqlString(restaurant.Address)}," +
+		                     $"zipcode={restaurant.Zipcode}," +
+		                     $"latitude={restaurant.Latitude}," +
+		                     $"longitude={restaurant.Longitude}," +
+		                     $"phone={StringToSqlString(restaurant.Phone)}," +
+		                     $"opening_hours={StringToSqlString(restaurant.OpeningHours)}," +
+		                     $"delivery={restaurant.Delivery}," +
+		                     $"cityId={await GetCityId(restaurant.City)} " +
+		                     $"WHERE id={restaurant.Id}";
+		await using var cmd = _dataSource.CreateCommand(updateQuery);
+		int changedRows = await cmd.ExecuteNonQueryAsync();
+		
+		//Checking if restaurant exists
 		var r = await GetRestaurantByName(restaurant.Name);
-		if (r == null) throw new Exception("Restaurant object not added to database");
+		if (changedRows == 0 || r == null) throw new Exception("restaurant not found");
 		return r;
 	}
 	
@@ -81,7 +101,7 @@ public class PostgreDb : IDb
 		if(rowsAffected == 0) throw new Exception("id not found");
 	}
 
-	private static Restaurant ReaderToRestaurant(NpgsqlDataReader reader)
+	private static RestaurantDTO ReaderToRestaurant(NpgsqlDataReader reader)
 	{
 		int id = reader.GetInt32(0);
 		string name = reader.GetString(1);
@@ -95,15 +115,15 @@ public class PostgreDb : IDb
 		string? openingHours = openingHoursObject is DBNull ? null : (string)openingHoursObject;
 		bool delivery = reader.GetBoolean(8);
 		string cityName = reader.GetString(9);
-		return new Restaurant(id, name, address, zipcode, latitude, longitude, phone, openingHours, delivery, cityName);
+		return new RestaurantDTO(id, name, address, zipcode, latitude, longitude, phone, openingHours, delivery, cityName);
 	}
 
-	private async Task<string> CreateRestaurantInsertQuery(RestaurantBase restaurant)
-	{
-		var fullRestaurant = restaurant is Restaurant ? (Restaurant)restaurant : null;
-		return $"INSERT INTO restaurant({(fullRestaurant == null ? "" : "id,")}name,address,zipcode,latitude,longitude,phone,opening_hours,delivery,cityid) " +
-		       $"VALUES({(fullRestaurant == null ? "" : $"{fullRestaurant.Id},")}'{restaurant.Name}', '{restaurant.Address}', {restaurant.Zipcode}, {restaurant.Latitude}, {restaurant.Longitude}, {(restaurant.Phone == null ? "null" : $"'{restaurant.Phone}'")}, {(restaurant.OpeningHours == null ? "null" : $"'{restaurant.OpeningHours}'")}, {restaurant.Delivery}, {await GetCityId(restaurant.City)})";
-	}
+	// private async Task<string> CreateRestaurantInsertQuery(NewRestaurantDTO newRestaurant)
+	// {
+	// 	var fullRestaurant = newRestaurant is RestaurantDTO ? (RestaurantDTO)newRestaurant : null;
+	// 	return $"INSERT INTO restaurant({(fullRestaurant == null ? "" : "id,")}name,address,zipcode,latitude,longitude,phone,opening_hours,delivery,cityid) " +
+	// 	       $"VALUES({(fullRestaurant == null ? "" : $"{fullRestaurant.Id},")}'{newRestaurant.Name}', '{newRestaurant.Address}', {newRestaurant.Zipcode}, {newRestaurant.Latitude}, {newRestaurant.Longitude}, {(newRestaurant.Phone == null ? "null" : $"'{newRestaurant.Phone}'")}, {(newRestaurant.OpeningHours == null ? "null" : $"'{newRestaurant.OpeningHours}'")}, {newRestaurant.Delivery}, {await GetCityId(newRestaurant.City)})";
+	// }
 
 	private async Task<int> GetCityId(string name)
 	{
@@ -114,4 +134,6 @@ public class PostgreDb : IDb
 		await insertCmd.ExecuteNonQueryAsync();
 		return await GetCityId(name);
 	}
+
+	private string StringToSqlString(string? value) => value == null ? "null" : $"'{value}'";
 }
