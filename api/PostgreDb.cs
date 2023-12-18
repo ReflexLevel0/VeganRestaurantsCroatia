@@ -115,14 +115,46 @@ public class PostgreDb : IDb
 		}
 	}
 
-	public Task<LinkDTO> PostLink(LinkDTO link)
+	public async Task<LinkDTO> PostLink(LinkDTO link)
 	{
-		throw new NotImplementedException();
+		//Inserting link into the database
+		await using var cmd = _dataSource.CreateCommand(
+			"INSERT INTO restaurantLink(restaurantid, linktype, link) " +
+			$"VALUES({link.RestaurantId},{await GetLinkTypeId(link.LinkType)},'{link.Link}')");
+		int changedRows = await cmd.ExecuteNonQueryAsync();
+		if (changedRows == 0) throw new Exception("Link not found");
+		
+		//Getting link from the database
+		await foreach (var l in GetLinks(link.RestaurantId, link.LinkType))
+		{
+			Console.WriteLine("inside");
+			return l;
+		}
+
+		//Throwing an exception if link wasn't inserted into the database
+		throw new Exception("Link not found");
 	}
 
-	public Task<LinkDTO> PutLink(LinkDTO link)
+	public async Task<LinkDTO> PutLink(LinkDTO link)
 	{
-		throw new NotImplementedException();
+		//Inserting the link (or updating if it conflicts with an existing link)
+		int linkTypeId = await GetLinkTypeId(link.LinkType);
+		string updateQuery = $"INSERT INTO restaurantlink(restaurantid,linktype,link) " +
+		                     $"VALUES({link.RestaurantId},{linkTypeId},'{link.Link}') " +
+		                     $"ON CONFLICT ON CONSTRAINT restaurantlink_pkey DO " +
+		                     $"UPDATE SET link='{link.Link}'";
+		await using var cmd = _dataSource.CreateCommand(updateQuery);
+		int changedRows = await cmd.ExecuteNonQueryAsync();
+		
+		//Checking if link exists
+		LinkDTO? result = null;
+		await foreach (var l in GetLinks(link.RestaurantId, link.LinkType))
+		{
+			result = l;
+			break;
+		}
+		if (changedRows == 0 || result == null) throw new Exception("restaurant not found");
+		return result;
 	}
 
 	public Task DeleteLink(int restaurantId, string type)
@@ -163,6 +195,16 @@ public class PostgreDb : IDb
 		await using var insertCmd = _dataSource.CreateCommand($"INSERT INTO city(name) VALUES('{name}')");
 		await insertCmd.ExecuteNonQueryAsync();
 		return await GetCityId(name);
+	}
+
+	private async Task<int> GetLinkTypeId(string type)
+	{
+		await using var cmd = _dataSource.CreateCommand($"SELECT id FROM link WHERE type='{type}'");
+		object? reader = await cmd.ExecuteScalarAsync();
+		if (reader != null) return (int)reader;
+		await using var insertCmd = _dataSource.CreateCommand($"INSERT INTO link(type) VALUES('{type}')");
+		await insertCmd.ExecuteNonQueryAsync();
+		return await GetLinkTypeId(type);
 	}
 
 	private string StringToSqlString(string? value) => value == null ? "null" : $"'{value}'";

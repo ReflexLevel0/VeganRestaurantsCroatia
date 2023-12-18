@@ -19,5 +19,43 @@ public class LinkController(IDb db) : ControllerBase
 			links.Add(restaurant);
 		}
 
-		return Ok(new ApiResponseWrapper("OK", "Fetched restaurant objects", JsonConvert.SerializeObject(links)));
+		return Ok(new ApiResponseWrapper("OK", "Fetched link objects", JsonConvert.SerializeObject(links)));
 	}
+
+	[HttpPost]
+	public async Task<ActionResult<ApiResponseWrapper>> PostLink(LinkDTO link)
+	{
+		try
+		{
+			var r = await db.PostLink(link);
+			return Ok(new ApiResponseWrapper("CREATED", "Added new link", JsonConvert.SerializeObject(r)));
+		}
+		catch (Exception ex)
+		{
+			ControllerHelper.PrintError(ex);
+			return BadRequestError;
+		}
+	}
+
+	[HttpPut]
+	public async Task<ActionResult<ApiResponseWrapper>> PutLink(LinkDTO link)
+	{
+		try
+		{
+			LinkDTO? li = null;
+			await foreach (var l in db.GetLinks(link.RestaurantId, link.LinkType))
+			{
+				li = l;
+				break;
+			}
+			if (li == null) return NotFound(new ApiResponseWrapper("Not Found", "Link with specified id not found", null));
+			li = await db.PutLink(link);
+			return Ok(new ApiResponseWrapper("OK", "Updated Link", JsonConvert.SerializeObject(li)));
+		}
+		catch (Exception ex)
+		{
+			ControllerHelper.PrintError(ex);
+			return BadRequestError;
+		}
+	}
+}
