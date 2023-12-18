@@ -9,7 +9,6 @@ builder.Services.AddSwaggerGen(options =>
 {
 	options.SupportNonNullableReferenceTypes();
 	var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-	Console.WriteLine(xmlFile);
 	var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 	options.IncludeXmlComments(xmlPath);
 });

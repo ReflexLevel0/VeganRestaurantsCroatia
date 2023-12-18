@@ -1,3 +1,4 @@
+using System.Text;
 using api.Models;
 using Npgsql;
 
@@ -9,6 +10,8 @@ public class PostgreDb : IDb
 
 	private readonly string _getRestaurantsQuery = $"SELECT r.id, r.name, address, zipcode, latitude, longitude, phone, opening_hours, delivery, c.name as cityName " +
 	                                              "FROM restaurant r JOIN city c ON r.cityId=c.id";
+	private readonly string _getLinksQuery = "SELECT restaurantid, l.type, link FROM restaurantLink rl " +
+		"JOIN link l ON rl.linktype = l.id";
 	
 	public PostgreDb(string connString)
 	{
@@ -100,6 +103,33 @@ public class PostgreDb : IDb
 		if(rowsAffected == 0) throw new Exception("id not found");
 	}
 
+	public async IAsyncEnumerable<LinkDTO> GetLinks(int? restaurantId, string? type)
+	{
+		await using var cmd = _dataSource.CreateCommand(_getLinksQuery + 
+		                                                $" WHERE restaurantid::text LIKE '{(restaurantId == null ? "%%" : restaurantId)}'" +
+		                                                $" AND type::text LIKE '{(type == null ? "%%" : type)}'");
+		await using var reader = await cmd.ExecuteReaderAsync();
+		while (await reader.ReadAsync())
+		{
+			yield return ReaderToLink(reader);
+		}
+	}
+
+	public Task<LinkDTO> PostLink(LinkDTO link)
+	{
+		throw new NotImplementedException();
+	}
+
+	public Task<LinkDTO> PutLink(LinkDTO link)
+	{
+		throw new NotImplementedException();
+	}
+
+	public Task DeleteLink(int restaurantId, string type)
+	{
+		throw new NotImplementedException();
+	}
+
 	private static RestaurantDTO ReaderToRestaurant(NpgsqlDataReader reader)
 	{
 		int id = reader.GetInt32(0);
@@ -115,6 +145,14 @@ public class PostgreDb : IDb
 		bool delivery = reader.GetBoolean(8);
 		string cityName = reader.GetString(9);
 		return new RestaurantDTO(id, name, address, zipcode, latitude, longitude, phone, openingHours, delivery, cityName);
+	}
+
+	private LinkDTO ReaderToLink(NpgsqlDataReader reader)
+	{
+		int restaurantId = reader.GetInt32(0);
+		string type = reader.GetString(1);
+		string link = reader.GetString(2);
+		return new LinkDTO(restaurantId, type, link);
 	}
 
 	private async Task<int> GetCityId(string name)
