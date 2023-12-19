@@ -15,8 +15,10 @@ builder.Services.AddSwaggerGen(options =>
 string dbConnectionString = File.ReadAllText("dbConnectionString.txt");
 builder.Services.AddSingleton<IDb>(_ => new PostgreDb(dbConnectionString));
 var app = builder.Build();
+app.Map("/error", () => new ApiResponseWrapper("Internal Server Error", "Something broke in the code :(", null));
 app.Map("/{*path}", () => new ApiResponseWrapper("Not Found", "API path doesn't exist", null));
 app.MapControllers();
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseExceptionHandler("/error");
 app.Run();
