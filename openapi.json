@@ -1,0 +1,665 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "api",
+    "version": "1.0"
+  },
+  "paths": {
+    "/Link": {
+      "get": {
+        "tags": [
+          "Link"
+        ],
+        "summary": "Returns links based on input parameters",
+        "parameters": [
+          {
+            "name": "restaurantId",
+            "in": "query",
+            "description": "Restaurant for which links will be returned (if null, links for all restaurants will be returned)",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Type of links that will be returned (if null, links of all types will be returned)",
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Links fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseWrapper"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Link"
+        ],
+        "summary": "Creates a new link",
+        "requestBody": {
+          "description": "Link data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseWrapper"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Link created"
+          },
+          "400": {
+            "description": "Generic error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Link"
+        ],
+        "summary": "Creates or updates a link based on provided data",
+        "requestBody": {
+          "description": "Link data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Link updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseWrapper"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Link created"
+          },
+          "400": {
+            "description": "Generic error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Link"
+        ],
+        "summary": "Deletes the specified link",
+        "requestBody": {
+          "description": "Link data identifying the link that should be deleted",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteLinkDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteLinkDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteLinkDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Restaurant deleted/updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseWrapper"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Restaurant with specified ID not found"
+          }
+        }
+      }
+    },
+    "/r/{restaurantId}": {
+      "get": {
+        "tags": [
+          "Link"
+        ],
+        "summary": "Returns all links for the specified restaurant ID",
+        "parameters": [
+          {
+            "name": "restaurantId",
+            "in": "path",
+            "description": "ID of the restaurant for which links will be returned",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Links fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseWrapper"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Restaurant ID not found"
+          }
+        }
+      }
+    },
+    "/t/{linkType}": {
+      "get": {
+        "tags": [
+          "Link"
+        ],
+        "summary": "Returns all links for the specified link type",
+        "parameters": [
+          {
+            "name": "linkType",
+            "in": "path",
+            "description": "Type of the links which will be returned",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Links fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseWrapper"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Link type not found"
+          }
+        }
+      }
+    },
+    "/Restaurant": {
+      "get": {
+        "tags": [
+          "Restaurant"
+        ],
+        "summary": "Returns all restaurants",
+        "responses": {
+          "200": {
+            "description": "Restaurants fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseWrapper"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Restaurant"
+        ],
+        "summary": "Creates a new restaurant",
+        "requestBody": {
+          "description": "Restaurant data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewRestaurantDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewRestaurantDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewRestaurantDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseWrapper"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Restaurant created"
+          },
+          "400": {
+            "description": "Generic error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Restaurant"
+        ],
+        "summary": "Creates or updates a restaurant",
+        "requestBody": {
+          "description": "Restaurant to be created or updated",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestaurantDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestaurantDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestaurantDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Restaurant updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseWrapper"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Restaurant created"
+          },
+          "400": {
+            "description": "Generic error"
+          }
+        }
+      }
+    },
+    "/Restaurant/{id}": {
+      "get": {
+        "tags": [
+          "Restaurant"
+        ],
+        "summary": "Returns a specific restaurant",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the restaurant that is to be returned",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Restaurant fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseWrapper"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Restaurant with specified ID not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Restaurant"
+        ],
+        "summary": "Creates or updates a restaurant with a specific ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the restaurant to be updated",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Restaurant data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewRestaurantDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewRestaurantDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewRestaurantDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Restaurant created/updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseWrapper"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Generic error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Restaurant"
+        ],
+        "summary": "Deletes the specified restaurant",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the restaurant to be deleted",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Restaurant deleted/updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseWrapper"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Restaurant with specified ID not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiResponseWrapper": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Status code",
+            "example": "200"
+          },
+          "message": {
+            "type": "string",
+            "description": "Short message specifying what happened",
+            "example": "Fetched all objects"
+          },
+          "response": {
+            "type": "string",
+            "description": "Data in JSON format",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeleteLinkDTO": {
+        "type": "object",
+        "properties": {
+          "restaurantId": {
+            "type": "integer",
+            "description": "Unique identifier of the restaurant",
+            "format": "int32",
+            "example": 5
+          },
+          "linkType": {
+            "type": "string",
+            "description": "Type of the link",
+            "example": "twitter"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LinkDTO": {
+        "type": "object",
+        "properties": {
+          "restaurantId": {
+            "type": "integer",
+            "description": "ID of the restaurant to which this link belongs to",
+            "format": "int32",
+            "example": 2
+          },
+          "linkType": {
+            "type": "string",
+            "description": "Type of link",
+            "example": "instagram"
+          },
+          "link": {
+            "type": "string",
+            "description": "Actual link value",
+            "example": "instagram.com/vegehop_restaurant"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NewRestaurantDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Restaurant name",
+            "example": "Restoran Vegehop"
+          },
+          "address": {
+            "type": "string",
+            "description": "Restaurant address",
+            "example": "Vlaška ulica 79"
+          },
+          "zipcode": {
+            "type": "integer",
+            "description": "Zipcode of restaurants location",
+            "format": "int32",
+            "example": 10000
+          },
+          "latitude": {
+            "type": "number",
+            "description": "Location latitude",
+            "format": "double",
+            "example": 45.814625
+          },
+          "longitude": {
+            "type": "number",
+            "description": "Location longitude",
+            "format": "double",
+            "example": 15.988238
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number used by the restaurant",
+            "nullable": true,
+            "example": "014649400"
+          },
+          "openingHours": {
+            "type": "string",
+            "description": "Working hours",
+            "nullable": true,
+            "example": "Mon-Sat 12:00-20:00"
+          },
+          "delivery": {
+            "type": "boolean",
+            "description": "Specifies whether or not restaurant offers delivery services",
+            "example": true
+          },
+          "city": {
+            "type": "string",
+            "description": "Name of the city in which the restaurant is located",
+            "example": "Zagreb"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RestaurantDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Restaurant name",
+            "example": "Restoran Vegehop"
+          },
+          "address": {
+            "type": "string",
+            "description": "Restaurant address",
+            "example": "Vlaška ulica 79"
+          },
+          "zipcode": {
+            "type": "integer",
+            "description": "Zipcode of restaurants location",
+            "format": "int32",
+            "example": 10000
+          },
+          "latitude": {
+            "type": "number",
+            "description": "Location latitude",
+            "format": "double",
+            "example": 45.814625
+          },
+          "longitude": {
+            "type": "number",
+            "description": "Location longitude",
+            "format": "double",
+            "example": 15.988238
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number used by the restaurant",
+            "nullable": true,
+            "example": "014649400"
+          },
+          "openingHours": {
+            "type": "string",
+            "description": "Working hours",
+            "nullable": true,
+            "example": "Mon-Sat 12:00-20:00"
+          },
+          "delivery": {
+            "type": "boolean",
+            "description": "Specifies whether or not restaurant offers delivery services",
+            "example": true
+          },
+          "city": {
+            "type": "string",
+            "description": "Name of the city in which the restaurant is located",
+            "example": "Zagreb"
+          },
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier of the restaurant",
+            "format": "int32",
+            "nullable": true,
+            "example": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}
