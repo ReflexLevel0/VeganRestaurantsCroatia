@@ -38,14 +38,16 @@ public class RestaurantController(IDb db) : ControllerBase
 	public async Task<ActionResult<ApiResponseWrapper>> GetRestaurant(int id)
 	{
 		var restaurant = await db.GetRestaurantById(id);
-		return restaurant == null ? NotFound(new ApiResponseWrapper("Not Found", "Restaurant with specified id not found", null)) : Ok(new ApiResponseWrapper("OK", "Fetched restaurant with specified id", JsonConvert.SerializeObject(restaurant)));
+		return restaurant == null ? 
+			NotFound(new ApiResponseWrapper("Not Found", "Restaurant with specified id not found", null)) : 
+			Ok(new ApiResponseWrapper("OK", "Fetched restaurant with specified id", JsonConvert.SerializeObject(restaurant)));
 	}
 
 	/// <summary>
 	/// Creates a new restaurant
 	/// </summary>
 	/// <param name="restaurant">Restaurant data</param>
-	/// <response code="200">Restaurant created</response>
+	/// <response code="201">Restaurant created</response>
 	/// <response code="400">Generic error</response>
 	[HttpPost]
 	[Produces("application/json")]
@@ -54,7 +56,7 @@ public class RestaurantController(IDb db) : ControllerBase
 		try
 		{
 			var r = await db.PostRestaurant(restaurant);
-			return Ok(new ApiResponseWrapper("CREATED", "Added new restaurant", JsonConvert.SerializeObject(r)));
+			return StatusCode(201, new ApiResponseWrapper("CREATED", "Added new restaurant", JsonConvert.SerializeObject(r)));
 		}
 		catch (Exception ex)
 		{
@@ -81,7 +83,8 @@ public class RestaurantController(IDb db) : ControllerBase
 	/// Creates or updates a restaurant
 	/// </summary>
 	/// <param name="restaurant">Restaurant to be created or updated</param>
-	/// <response code="200">Restaurant created/updated</response>
+	/// <response code="200">Restaurant updated</response>
+	/// <response code="201">Restaurant created</response>
 	/// <response code="400">Generic error</response>
 	[HttpPut]
 	[Produces("application/json")]

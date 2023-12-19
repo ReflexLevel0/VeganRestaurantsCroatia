@@ -71,7 +71,7 @@ public class LinkController(IDb db) : ControllerBase
 	/// Creates a new link
 	/// </summary>
 	/// <param name="link">Link data</param>
-	/// <response code="200">Restaurant created</response>
+	/// <response code="201">Link created</response>
 	/// <response code="400">Generic error</response>
 	[HttpPost]
 	[Produces("application/json")]
@@ -80,7 +80,7 @@ public class LinkController(IDb db) : ControllerBase
 		try
 		{
 			var r = await db.PostLink(link);
-			return Ok(new ApiResponseWrapper("CREATED", "Added new link", JsonConvert.SerializeObject(r)));
+			return StatusCode(201, new ApiResponseWrapper("CREATED", "Added new link", JsonConvert.SerializeObject(r)));
 		}
 		catch (Exception ex)
 		{
@@ -93,7 +93,8 @@ public class LinkController(IDb db) : ControllerBase
 	/// Creates or updates a link based on provided data
 	/// </summary>
 	/// <param name="link">Link data</param>
-	/// <response code="200">Restaurant created/updated</response>
+	/// <response code="200">Link updated</response>
+	/// <response code="201">Link created</response>
 	/// <response code="400">Generic error</response>
 	[HttpPut]
 	[Produces("application/json")]
@@ -101,6 +102,16 @@ public class LinkController(IDb db) : ControllerBase
 	{
 		try
 		{
+			bool linkExists = false;
+			await foreach (var ll in db.GetLinks(link.RestaurantId, link.LinkType))
+			{
+				linkExists = true;
+			}
+
+			//Creating new link if it doesn't exist
+			if (linkExists == false) return await PostLink(link);
+			
+			//Updating an already existing link
 			var l = await db.PutLink(link);
 			return Ok(new ApiResponseWrapper("OK", "Updated Link", JsonConvert.SerializeObject(l)));
 		}
