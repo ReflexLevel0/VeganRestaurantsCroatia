@@ -8,8 +8,6 @@ namespace api.Controllers;
 [ApiController]
 public class LinkController(IDb db) : ControllerBase
 {
-	private ActionResult<ApiResponseWrapper> BadRequestError => StatusCode(400, new ApiResponseWrapper("Bad Request", "Error happened in processing your request", null));
-	
 	/// <summary>
 	/// Returns links based on input parameters
 	/// </summary>
@@ -32,12 +30,7 @@ public class LinkController(IDb db) : ControllerBase
 		}
 		catch (Exception ex)
 		{
-			if (ex.Message.Contains("id not found") || ex.Message.Contains("type not found"))
-			{
-				return NotFound(new ApiResponseWrapper("Not Found", "Link with specified parameters not found", null));
-			}
-
-			return BadRequestError;
+			return new ErrorHandler().Parse(ex);
 		}
 	}
 
@@ -84,8 +77,7 @@ public class LinkController(IDb db) : ControllerBase
 		}
 		catch (Exception ex)
 		{
-			ControllerHelper.PrintError(ex);
-			return BadRequestError;
+			return new ErrorHandler().Parse(ex);
 		}
 	}
 
@@ -117,8 +109,7 @@ public class LinkController(IDb db) : ControllerBase
 		}
 		catch (Exception ex)
 		{
-			ControllerHelper.PrintError(ex);
-			return BadRequestError;
+			return new ErrorHandler().Parse(ex);
 		}
 	}
 
@@ -127,7 +118,6 @@ public class LinkController(IDb db) : ControllerBase
 	/// </summary>
 	/// <param name="link">Link data identifying the link that should be deleted</param>
 	/// <response code="200">Restaurant deleted/updated</response>
-	/// <response code="400">Generic error</response>
 	/// <response code="404">Restaurant with specified ID not found</response>
 	[HttpDelete]
 	[Produces("application/json")]
@@ -140,9 +130,7 @@ public class LinkController(IDb db) : ControllerBase
 		}
 		catch (Exception ex)
 		{
-			ControllerHelper.PrintError(ex);
-			if (ex.Message.Contains("id not found") == false) return BadRequestError;
-			return NotFound(new ApiResponseWrapper("Not Found", "Link with specified restaurant id and link type not found", null));
+			return new ErrorHandler().Parse(ex);
 		}
 	}
 }

@@ -185,7 +185,7 @@ public class PostgreDb : IDb
 		string deleteQuery = $"DELETE FROM restaurantlink WHERE restaurantid={link.RestaurantId} AND linktype={await GetLinkTypeId(link.LinkType, false)}";
 		await using var cmd = _dataSource.CreateCommand(deleteQuery); 
 		int rowsAffected = await cmd.ExecuteNonQueryAsync();
-		if(rowsAffected == 0) throw new Exception("id not found");
+		if(rowsAffected == 0) throw new Exception("link not found");
 	}
 
 	private static RestaurantDTO ReaderToRestaurant(NpgsqlDataReader reader)

@@ -8,7 +8,7 @@ namespace api.Controllers;
 [ApiController]
 public class RestaurantController(IDb db) : ControllerBase
 {
-	private ActionResult<ApiResponseWrapper> BadRequestError => StatusCode(400, new ApiResponseWrapper("Bad Request", "Error happened in processing your request", null));
+	
 
 	/// <summary>
 	/// Returns all restaurants
@@ -60,8 +60,7 @@ public class RestaurantController(IDb db) : ControllerBase
 		}
 		catch (Exception ex)
 		{
-			ControllerHelper.PrintError(ex);
-			return BadRequestError;
+			return new ErrorHandler().Parse(ex);
 		}
 	}
 
@@ -103,8 +102,7 @@ public class RestaurantController(IDb db) : ControllerBase
 		}
 		catch (Exception ex)
 		{
-			ControllerHelper.PrintError(ex);
-			return BadRequestError;
+			return new ErrorHandler().Parse(ex);
 		}
 	}
 
@@ -113,7 +111,6 @@ public class RestaurantController(IDb db) : ControllerBase
 	/// </summary>
 	/// <param name="id">ID of the restaurant to be deleted</param>
 	/// <response code="200">Restaurant deleted/updated</response>
-	/// <response code="400">Generic error</response>
 	/// <response code="404">Restaurant with specified ID not found</response>
 	[HttpDelete("{id}")]
 	[Produces("application/json")]
@@ -126,9 +123,7 @@ public class RestaurantController(IDb db) : ControllerBase
 		}
 		catch (Exception ex)
 		{
-			ControllerHelper.PrintError(ex);
-			if (ex.Message.Contains("id not found") == false) return BadRequestError;
-			return NotFound(new ApiResponseWrapper("Not Found", "Restaurant with specified id not found", null));
+			return new ErrorHandler().Parse(ex);
 		}
 	}
 }
