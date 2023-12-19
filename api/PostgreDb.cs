@@ -105,6 +105,16 @@ public class PostgreDb : IDb
 
 	public async IAsyncEnumerable<LinkDTO> GetLinks(int? restaurantId, string? type)
 	{
+		//Checking if restaurant exists
+		if (restaurantId != null)
+		{
+			var r = await GetRestaurantById((int)restaurantId);
+			if (r == null) throw new Exception("Restaurant id not found");
+		}
+
+		//Checking if link type exists (will throw exception if it doesn't exist)
+		if(type != null) await GetLinkTypeId(type, false);
+		
 		await using var cmd = _dataSource.CreateCommand(_getLinksQuery + 
 		                                                $" WHERE restaurantid::text LIKE '{(restaurantId == null ? "%%" : restaurantId)}'" +
 		                                                $" AND type::text LIKE '{(type == null ? "%%" : type)}'");
@@ -120,7 +130,7 @@ public class PostgreDb : IDb
 		//Inserting link into the database
 		await using var cmd = _dataSource.CreateCommand(
 			"INSERT INTO restaurantLink(restaurantid, linktype, link) " +
-			$"VALUES({link.RestaurantId},{await GetLinkTypeId(link.LinkType)},'{link.Link}')");
+			$"VALUES({link.RestaurantId},{await GetLinkTypeId(link.LinkType, true)},'{link.Link}')");
 		int changedRows = await cmd.ExecuteNonQueryAsync();
 		if (changedRows == 0) throw new Exception("Link not found");
 		
@@ -151,7 +161,7 @@ public class PostgreDb : IDb
 		}
 		
 		//Inserting the link (or updating if it conflicts with an existing link)
-		int linkTypeId = await GetLinkTypeId(link.LinkType);
+		int linkTypeId = await GetLinkTypeId(link.LinkType, true);
 		string updateQuery = $"INSERT INTO restaurantlink(restaurantid,linktype,link) " +
 		                     $"VALUES({link.RestaurantId},{linkTypeId},'{link.Link}') " +
 		                     $"ON CONFLICT ON CONSTRAINT restaurantlink_pkey DO " +
@@ -172,7 +182,7 @@ public class PostgreDb : IDb
 
 	public async Task DeleteLink(DeleteLinkDTO link)
 	{
-		string deleteQuery = $"DELETE FROM restaurantlink WHERE restaurantid={link.RestaurantId} AND linktype={await GetLinkTypeId(link.LinkType)}";
+		string deleteQuery = $"DELETE FROM restaurantlink WHERE restaurantid={link.RestaurantId} AND linktype={await GetLinkTypeId(link.LinkType, false)}";
 		await using var cmd = _dataSource.CreateCommand(deleteQuery); 
 		int rowsAffected = await cmd.ExecuteNonQueryAsync();
 		if(rowsAffected == 0) throw new Exception("id not found");
@@ -213,14 +223,15 @@ public class PostgreDb : IDb
 		return await GetCityId(name);
 	}
 
-	private async Task<int> GetLinkTypeId(string type)
+	private async Task<int> GetLinkTypeId(string type, bool createNewIfNotFound)
 	{
 		await using var cmd = _dataSource.CreateCommand($"SELECT id FROM link WHERE type='{type}'");
 		object? reader = await cmd.ExecuteScalarAsync();
 		if (reader != null) return (int)reader;
+		if (createNewIfNotFound == false) throw new Exception("Link type not found");
 		await using var insertCmd = _dataSource.CreateCommand($"INSERT INTO link(type) VALUES('{type}')");
 		await insertCmd.ExecuteNonQueryAsync();
-		return await GetLinkTypeId(type);
+		return await GetLinkTypeId(type, createNewIfNotFound);
 	}
 
 	private string StringToSqlString(string? value) => value == null ? "null" : $"'{value}'";
