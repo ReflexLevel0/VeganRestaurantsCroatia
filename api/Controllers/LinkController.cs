@@ -40,10 +40,11 @@ public class LinkController(IDb db) : ControllerBase
 	/// <param name="restaurantId">ID of the restaurant for which links will be returned</param>
 	/// <response code="200">Links fetched</response>
 	/// <response code="404">Restaurant ID not found</response>
-	[HttpGet("/r/{restaurantId}")]
+	[HttpGet("r/{restaurantId}")]
 	[Produces("application/json")]
 	public async Task<ActionResult<ApiResponseWrapper>> GetLinks(int? restaurantId)
 	{
+		Console.WriteLine(restaurantId);
 		return await GetLinks(restaurantId, null);
 	}
 
@@ -53,7 +54,7 @@ public class LinkController(IDb db) : ControllerBase
 	/// <param name="linkType">Type of the links which will be returned</param>
 	/// <response code="200">Links fetched</response>
 	/// <response code="404">Link type not found</response>
-	[HttpGet("/t/{linkType}")]
+	[HttpGet("t/{linkType}")]
 	[Produces("application/json")]
 	public async Task<ActionResult<ApiResponseWrapper>> GetLinks(string? linkType)
 	{
