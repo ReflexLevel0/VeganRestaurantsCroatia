@@ -2,9 +2,9 @@
   <br/>
   <router-link to="/" class="btn">Home</router-link>
   <router-link to="/datatable" class="btn">Data table</router-link>
-  <button v-if="!isAuthenticated" class="btn" @click="login">Log in</button>
-  <button v-if="isAuthenticated" class="btn" @click="logout">Log out</button>
-  <button v-if="isAuthenticated" class="btn" @click="onAccountClick">Account</button>
+  <button v-if="!accountStore.isAuthenticated" class="btn" @click="login">Log in</button>
+  <button v-if="accountStore.isAuthenticated" class="btn" @click="logout">Log out</button>
+  <button v-if="accountStore.isAuthenticated" class="btn" @click="onAccountClick">Account</button>
   <br/>
   <router-view>
   </router-view>
@@ -13,36 +13,41 @@
 <script>
 import {useAuth0} from "@auth0/auth0-vue";
 import router from "@/router";
-import { useAccountStore } from "./stores/accountStore"
+import {useAccountStore} from "@/stores/accountStore";
 
 export default {
   name: 'App',
   setup() {
     const {loginWithRedirect, logout, user, isAuthenticated} = useAuth0();
-    const accStore = useAccountStore()
+    const accountStore = useAccountStore()
 
     return {
-      login: () => {
-        loginWithRedirect();
-      },
-      logout: () => {
-        logout({logoutParams: {returnTo: window.location.origin}});
-        localStorage.setItem("name", "")
-        localStorage.setItem("nickname", "")
-        localStorage.setItem("email", "")
-        localStorage.setItem("isAuthenticated", false.toString())
-      },
       isAuthenticated,
       user,
-      store: accStore
+      loginWithRedirect,
+      logout,
+      accountStore
     }
   },
   methods: {
+    login(){
+      console.log(this.accountStore.name)
+      if(this.accountStore.name === null){
+        this.loginWithRedirect()
+      }
+      this.accountStore.isAuthenticated = true
+    },
+    logout(){
+      this.accountStore.isAuthenticated = false
+      router.push({name: "Home"})
+    },
     onAccountClick(){
-      localStorage.setItem("name", this.user.name)
-      localStorage.setItem("nickname", this.user.nickname)
-      localStorage.setItem("email", this.user.email)
-      localStorage.setItem("isAuthenticated", this.isAuthenticated.toString())
+      if(this.user !== undefined){
+        this.accountStore.name = this.user.name
+        this.accountStore.nickname = this.user.nickname
+        this.accountStore.email = this.user.email
+        this.accountStore.isAuthenticated = this.isAuthenticated
+      }
       router.push({name: "Account"})
     }
   }

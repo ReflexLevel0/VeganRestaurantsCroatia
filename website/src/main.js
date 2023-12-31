@@ -1,9 +1,11 @@
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 import App from './App.vue'
 import router from "@/router";
 import { createAuth0 } from '@auth0/auth0-vue';
+import {createPinia} from "pinia";
 
-createApp(App).use(router).use(
+const pinia = createPinia()
+createApp(App).use(pinia).use(router).use(
     createAuth0({
         domain: "dev-bbrulmdzs2x816wl.eu.auth0.com",
         clientId: "tRChSVRtEN8tONiuCo0L233Y5mdCrCaY",
