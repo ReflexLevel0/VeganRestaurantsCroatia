@@ -1,6 +1,7 @@
 import {createRouter, createWebHistory} from "vue-router";
 import DataDownload from "@/components/DataDownload.vue";
 import RestaurantTable from "@/components/RestaurantTable.vue";
+import AccountData from "@/components/AccountData.vue";
 
 const routes = [
     {
@@ -12,6 +13,12 @@ const routes = [
         path: '/datatable',
         name: 'Data table',
         component: RestaurantTable
+    },
+    {
+        path: '/account',
+        name: 'Account',
+        component: AccountData,
+        props: true
     }
 ]
 
