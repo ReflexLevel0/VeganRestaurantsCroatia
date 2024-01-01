@@ -1,27 +1,20 @@
 <script>
+import {useAccountStore} from "@/stores/accountStore";
 export default{
-  mounted(){
-    this.name = localStorage.getItem("name")
-    this.nickname = localStorage.getItem("nickname")
-    this.email = localStorage.getItem("email")
-    this.isAuthenticated = localStorage.getItem("isAuthenticated") !== "false"
-  },
-  data() {
+  setup(){
+    const accountStore = useAccountStore()
     return {
-      name: null,
-      email: null,
-      nickname: null,
-      isAuthenticated: false
+      accountStore
     }
   }
 }
 </script>
 
 <template>
-<div v-if="isAuthenticated === true">
-  <div>Name: {{this.$data.name}}</div>
-  <div>Nickname: {{this.$data.nickname}}</div>
-  <div>Email: {{this.$data.email}}</div>
+<div v-if="accountStore.isAuthenticated === true">
+  <div>Name: {{accountStore.user.name}}</div>
+  <div>Nickname: {{accountStore.user.nickname}}</div>
+  <div>Email: {{accountStore.user.email}}</div>
 </div>
 </template>
 

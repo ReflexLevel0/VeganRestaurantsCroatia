@@ -13,12 +13,13 @@
 <script>
 import {useAuth0} from "@auth0/auth0-vue";
 import router from "@/router";
-import {useAccountStore} from "@/stores/accountStore";
+import {refreshAccountData, useAccountStore} from "@/stores/accountStore";
 
 export default {
   name: 'App',
   setup() {
     const {loginWithRedirect, logout, user, isAuthenticated} = useAuth0();
+    refreshAccountData()
     const accountStore = useAccountStore()
 
     return {
@@ -30,24 +31,14 @@ export default {
     }
   },
   methods: {
-    login(){
-      console.log(this.accountStore.name)
-      if(this.accountStore.name === null){
-        this.loginWithRedirect()
-      }
-      this.accountStore.isAuthenticated = true
+    async login(){
+      await this.loginWithRedirect()
     },
-    logout(){
-      this.accountStore.isAuthenticated = false
-      router.push({name: "Home"})
+    async logout(){
+      await this.logout()
+      await router.push({name: "Home"})
     },
     onAccountClick(){
-      if(this.user !== undefined){
-        this.accountStore.name = this.user.name
-        this.accountStore.nickname = this.user.nickname
-        this.accountStore.email = this.user.email
-        this.accountStore.isAuthenticated = this.isAuthenticated
-      }
       router.push({name: "Account"})
     }
   }
