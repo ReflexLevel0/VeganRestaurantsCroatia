@@ -10,7 +10,8 @@ export async function refreshAccountData() {
         try {
             for (let i = 0; i < localStorage.length; i++) {
                 if (localStorage.key(i).endsWith(":@@user@@")) {
-                    user = JSON.parse(localStorage.getItem(localStorage.key(i))).decodedToken.user
+                    let userData = JSON.parse(localStorage.getItem(localStorage.key(i)))
+                    user = userData.decodedToken.user
                     isAuthenticated = true
                     break
                 }

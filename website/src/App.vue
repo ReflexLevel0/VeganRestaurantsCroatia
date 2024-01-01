@@ -3,6 +3,7 @@
   <router-link to="/" class="btn">Home</router-link>
   <router-link to="/datatable" class="btn">Data table</router-link>
   <button v-if="!accountStore.isAuthenticated" class="btn" @click="login">Log in</button>
+  <button v-if="accountStore.isAuthenticated" class="btn" @click="refreshCopies">Refresh copies</button>
   <button v-if="accountStore.isAuthenticated" class="btn" @click="logout">Log out</button>
   <button v-if="accountStore.isAuthenticated" class="btn" @click="onAccountClick">Account</button>
   <br/>
@@ -37,6 +38,13 @@ export default {
     async logout(){
       await this.logout()
       await router.push({name: "Home"})
+    },
+    refreshCopies(){
+      let link = document.createElement("a")
+      link.href = "http://localhost:3000/json"
+      link.click()
+      link.href = "http://localhost:3000/csv"
+      link.click()
     },
     onAccountClick(){
       router.push({name: "Account"})

@@ -23,17 +23,6 @@ export default {
       user,
       isAuthenticated
     };
-  },
-  watch: {
-    isAuthenticated(){
-      if(this.isAuthenticated === true && this.user !== null){
-        console.log(this.user.hasOwnProperty("name"))
-        //localStorage.setItem('user', this.user.valueOf("name"))
-        // localStorage.setItem('name', this.user.name)
-        // localStorage.setItem('email', this.user.email)
-        // localStorage.setItem('email_verified', this.user.email_verified.toString())
-      }
-    }
   }
 };
 </script>
