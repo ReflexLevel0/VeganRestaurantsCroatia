@@ -1,12 +1,38 @@
-<script setup>
+<script>
+import {useAccountStore} from "@/stores/accountStore";
+
+export default{
+  setup(){
+    const accountStore = useAccountStore()
+    return {
+      accountStore
+    }
+  }
+}
 </script>
 
 <template>
-  <a href="http://localhost:3000/json" download="veganCroatia.json">Full JSON file</a>
-  <br/>
-  <a href="http://localhost:3000/csv" download="veganCroatia.csv">Full CSV file</a>
+  <h1 class="title">Vegan restaurants</h1>
+  <div>This website contains all data about vegan restaurants in croatia.</div>
+  <p>Github page: <a href="https://github.com/ReflexLevel0/VeganRestaurantsCroatia">https://github.com/ReflexLevel0/VeganRestaurantsCroatia</a></p>
+  <div v-if="accountStore.isAuthenticated">
+    <div class="bold">Download links:</div>
+    <a href="http://localhost:3000/json" download="veganCroatia.json">Full JSON file</a>
+    <br/>
+    <a href="http://localhost:3000/csv" download="veganCroatia.csv">Full CSV file</a>
+  </div>
+  <div v-else>
+    <p class="bold">You have to log in to download restaurant data!</p>
+  </div>
 </template>
 
 <style scoped>
+.title{
+  width: 100%;
+  text-align: center;
+}
 
+.bold{
+  font-weight: bold;
+}
 </style>
