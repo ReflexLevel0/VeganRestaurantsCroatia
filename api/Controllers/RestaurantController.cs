@@ -15,7 +15,7 @@ public class RestaurantController(IDb db) : ControllerBase
 	/// <response code="200">Restaurants fetched</response>
 	[HttpGet]
 	[Produces("application/json")]
-	public async Task<ActionResult<ApiResponseWrapper>> GetRestaurants(string? all, string? name, string? address, string? city, string? zipcode, string? latitude, string? longitude, string? phone, string? openingHours, string? delivery, string? linkType, string? link)
+	public async Task<ActionResult<ApiResponseWrapper>> GetRestaurants(string? all, string? name, string? address, string? city, string? zipcode, string? latitude, string? longitude, string? telephone, string? openingHours, string? delivery, string? linkType, string? link)
 	{
 		var restaurants = new List<RestaurantDTO?>();
 
@@ -27,14 +27,14 @@ public class RestaurantController(IDb db) : ControllerBase
 			zipcode = all;
 			latitude = all;
 			longitude = all;
-			phone = all;
+			telephone = all;
 			openingHours = all;
 			delivery = all;
 			linkType = all;
 			link = all;
 		}
 		
-		await foreach (var restaurant in db.GetRestaurants(name, address, city, zipcode, latitude, longitude, phone, openingHours, delivery, linkType, link))
+		await foreach (var restaurant in db.GetRestaurants(name, address, city, zipcode, latitude, longitude, telephone, openingHours, delivery, linkType, link))
 		{
 			restaurants.Add(restaurant);
 		}
@@ -90,7 +90,7 @@ public class RestaurantController(IDb db) : ControllerBase
 	[Produces("application/json")]
 	public async Task<ActionResult<ApiResponseWrapper>> PutRestaurant(int id, NewRestaurantDTO restaurant)
 	{
-		return await PutRestaurant(new RestaurantDTO(id, restaurant.Name, restaurant.Address, restaurant.Zipcode, restaurant.Latitude, restaurant.Longitude, restaurant.Phone, restaurant.OpeningHours, restaurant.Delivery, restaurant.City));
+		return await PutRestaurant(new RestaurantDTO(id, restaurant.Name, restaurant.Address, restaurant.Zipcode, restaurant.Latitude, restaurant.Longitude, restaurant.Telephone, restaurant.OpeningHours, restaurant.Delivery, restaurant.City));
 	}
 
 	/// <summary>

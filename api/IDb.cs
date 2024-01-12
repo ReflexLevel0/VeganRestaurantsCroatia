@@ -4,7 +4,7 @@ namespace api;
 
 public interface IDb
 {
-	IAsyncEnumerable<RestaurantWithLinks> GetRestaurants(string? name, string? address, string? city, string? zipcode, string? latitude, string? longitude, string? phone, string? openingHours, string? delivery, string? linkType, string? link);
+	IAsyncEnumerable<RestaurantWithLinks> GetRestaurants(string? name, string? address, string? city, string? zipcode, string? latitude, string? longitude, string? telephone, string? openingHours, string? delivery, string? linkType, string? link);
 	Task<RestaurantDTO?> GetRestaurantById(int id);
 	Task<RestaurantDTO?> GetRestaurantByName(string name);
 	Task<RestaurantDTO> PostRestaurant(NewRestaurantDTO restaurant);

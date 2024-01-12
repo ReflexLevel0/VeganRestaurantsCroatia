@@ -197,8 +197,8 @@ CREATE TABLE public.restaurant (
     zipcode integer NOT NULL,
     latitude numeric(10,8) NOT NULL,
     longitude numeric(10,8) NOT NULL,
-    phone character varying(30),
-    opening_hours character varying(255),
+    telephone character varying(30),
+    openingHours character varying(255),
     delivery boolean NOT NULL
 );
 
@@ -407,21 +407,21 @@ INSERT INTO public.link (id, type) VALUES (8, 'x');
 -- Data for Name: restaurant; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, phone, opening_hours, delivery) VALUES (1, 'Restoran Vegehop', 'Vlaška ulica 79', 1, 10000, 45.81462343, 15.98823879, '014649400', 'Mon-Sat 12:00-20:00', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, phone, opening_hours, delivery) VALUES (2, 'Gajbica', 'Vlaška ulica 7', 1, 10000, 45.81391498, 15.97946271, '0915141274', 'Mon-Sat 11:00-18:00', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, phone, opening_hours, delivery) VALUES (3, 'OAZA Joyful Kitchen', 'Ulica Pavla Radića 9', 1, 10000, 45.81434540, 15.97565004, '0976602744', 'Mon-Fri 10:00-21:00,Sat 12:00-21:00', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, phone, opening_hours, delivery) VALUES (4, 'BEKIND', 'Ilica 75', 1, 10000, 45.81245345, 15.96450714, '015534763', 'Tue-Sat 09:00-22:00,Sun 09:00-16:00', false);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, phone, opening_hours, delivery) VALUES (5, 'Zrno bio bistro', 'Medulićeva ulica 20', 1, 10000, 45.81122113, 15.96667598, '014847540', 'Mon-Sat 12:00-21:30', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, phone, opening_hours, delivery) VALUES (6, 'Falafel, etc.', 'Ulica Andrije Žaje 60', 1, 10000, 45.80695890, 15.95334024, '012343945', 'Mon-Sun 11:00-21:30', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, phone, opening_hours, delivery) VALUES (7, 'Shambala', 'Iločka ulica 34', 1, 10000, 45.79956603, 15.95967074, '0957618710', 'Mon-Fri 11:00-18:00,Sat-Sun 11:00:16:00', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, phone, opening_hours, delivery) VALUES (8, 'Simple Green by Jelena', 'Zelinska Ulica 7', 1, 10000, 45.80106354, 15.97246634, '015561679', 'Mon-Sat 08:00-16:00', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, phone, opening_hours, delivery) VALUES (9, 'Vege Fino za sve', 'Ulica Lavoslava Ružičke 48', 1, 10000, 45.79626824, 15.96986333, '098777577', 'Mon-Fri 10:00-18:00,Sun 12:00-18:00', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, phone, opening_hours, delivery) VALUES (10, 'Barcode Mitra', 'Zagrebačka cesta 113', 1, 10000, 45.80673849, 15.92470464, '013770428', 'Mon-Sat 14:00-22:00', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, phone, opening_hours, delivery) VALUES (11, 'Pandora Greenbox', 'Obrov ulica 4', 2, 21000, 43.50930416, 16.43764950, '021236120', 'Mon-Sun 08:30-12:00', false);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, phone, opening_hours, delivery) VALUES (12, 'Upcafe', 'Ulica Domovinskog rata 29a', 2, 21000, 43.51692872, 16.44540914, '0916210500', 'Mon-Sat 07:00-20:00,Sun 08:00-20:00', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, phone, opening_hours, delivery) VALUES (13, 'The Botanist', 'Ulica Mihovila Pavlinovića 4', 3, 23000, 44.11643740, 15.22593932, '0924232296', 'Mon-Sun 12:00-23:00', false);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, phone, opening_hours, delivery) VALUES (14, 'Nishta', 'Prijeko ulica bb', 4, 20000, 42.67534972, 18.10592518, '020322088', 'Mon-Sat 11:30-22:00', false);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, phone, opening_hours, delivery) VALUES (15, 'BioMania Bistro Bol', 'Rudina 10', 5, 21420, 43.26175996, 16.65493408, '0919362276', 'Mon-Thu 13:00-21:00,Sat 13:00-21:00,Sun 10:00-22:00', false);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (1, 'Restoran Vegehop', 'Vlaška ulica 79', 1, 10000, 45.81462343, 15.98823879, '014649400', 'Mon-Sat 12:00-20:00', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (2, 'Gajbica', 'Vlaška ulica 7', 1, 10000, 45.81391498, 15.97946271, '0915141274', 'Mon-Sat 11:00-18:00', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (3, 'OAZA Joyful Kitchen', 'Ulica Pavla Radića 9', 1, 10000, 45.81434540, 15.97565004, '0976602744', 'Mon-Fri 10:00-21:00,Sat 12:00-21:00', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (4, 'BEKIND', 'Ilica 75', 1, 10000, 45.81245345, 15.96450714, '015534763', 'Tue-Sat 09:00-22:00,Sun 09:00-16:00', false);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (5, 'Zrno bio bistro', 'Medulićeva ulica 20', 1, 10000, 45.81122113, 15.96667598, '014847540', 'Mon-Sat 12:00-21:30', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (6, 'Falafel, etc.', 'Ulica Andrije Žaje 60', 1, 10000, 45.80695890, 15.95334024, '012343945', 'Mon-Sun 11:00-21:30', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (7, 'Shambala', 'Iločka ulica 34', 1, 10000, 45.79956603, 15.95967074, '0957618710', 'Mon-Fri 11:00-18:00,Sat-Sun 11:00:16:00', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (8, 'Simple Green by Jelena', 'Zelinska Ulica 7', 1, 10000, 45.80106354, 15.97246634, '015561679', 'Mon-Sat 08:00-16:00', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (9, 'Vege Fino za sve', 'Ulica Lavoslava Ružičke 48', 1, 10000, 45.79626824, 15.96986333, '098777577', 'Mon-Fri 10:00-18:00,Sun 12:00-18:00', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (10, 'Barcode Mitra', 'Zagrebačka cesta 113', 1, 10000, 45.80673849, 15.92470464, '013770428', 'Mon-Sat 14:00-22:00', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (11, 'Pandora Greenbox', 'Obrov ulica 4', 2, 21000, 43.50930416, 16.43764950, '021236120', 'Mon-Sun 08:30-12:00', false);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (12, 'Upcafe', 'Ulica Domovinskog rata 29a', 2, 21000, 43.51692872, 16.44540914, '0916210500', 'Mon-Sat 07:00-20:00,Sun 08:00-20:00', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (13, 'The Botanist', 'Ulica Mihovila Pavlinovića 4', 3, 23000, 44.11643740, 15.22593932, '0924232296', 'Mon-Sun 12:00-23:00', false);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (14, 'Nishta', 'Prijeko ulica bb', 4, 20000, 42.67534972, 18.10592518, '020322088', 'Mon-Sat 11:30-22:00', false);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (15, 'BioMania Bistro Bol', 'Rudina 10', 5, 21420, 43.26175996, 16.65493408, '0919362276', 'Mon-Thu 13:00-21:00,Sat 13:00-21:00,Sun 10:00-22:00', false);
 
 
 --

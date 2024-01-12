@@ -20,8 +20,8 @@ export default {
         {value: "zipcode", text: "Zipcode"},
         {value: "latitude", text: "Latitude"},
         {value: "longitude", text: "Longitude"},
-        {value: "phone", text: "Phone"},
-        {value: "opening_hours", text: "Opening hours"},
+        {value: "telephone", text: "Phone"},
+        {value: "openingHours", text: "Opening hours"},
         {value: "delivery", text: "Delivery"},
         {value: "city", text: "City"}
       ],
@@ -87,8 +87,8 @@ export default {
     <Column field="zipcode" header="Zipcode" :sortable="true"></Column>
     <Column field="latitude" header="Latitude" :sortable="true"></Column>
     <Column field="longitude" header="Longitude" :sortable="true"></Column>
-    <Column field="phone" header="Phone" :sortable="true"></Column>
-    <Column field="opening_hours" header="Opening hours" :sortable="true"></Column>
+    <Column field="telephone" header="Phone" :sortable="true"></Column>
+    <Column field="openingHours" header="Opening hours" :sortable="true"></Column>
     <Column field="delivery" header="Delivery" :sortable="true"></Column>
     <Column field="websitelinks" header="Website links" :sortable="true"></Column>
   </DataTable>

@@ -11,7 +11,7 @@ public class PostgreDb : IDb
 {
 	private readonly NpgsqlDataSource _dataSource;
 
-	private readonly string _getRestaurantsQuery = $"SELECT r.id, r.name, address, zipcode, latitude, longitude, phone, opening_hours, delivery, c.name as cityName " +
+	private readonly string _getRestaurantsQuery = $"SELECT r.id, r.name, address, zipcode, latitude, longitude, telephone, openingHours, delivery, c.name as cityName " +
 	                                              "FROM restaurant r JOIN city c ON r.cityId=c.id";
 	private readonly string _getLinksQuery = "SELECT restaurantid, l.type, link FROM restaurantLink rl " +
 		"JOIN link l ON rl.linktype = l.id";
@@ -24,7 +24,7 @@ public class PostgreDb : IDb
 
 	public async Task<NpgsqlConnection> OpenConnectionAsync() => await _dataSource.OpenConnectionAsync();
 
-	public async IAsyncEnumerable<RestaurantWithLinks> GetRestaurants(string? name, string? address, string? city, string? zipcode, string? latitude, string? longitude, string? phone, string? openingHours, string? delivery, string? linkType, string? link)
+	public async IAsyncEnumerable<RestaurantWithLinks> GetRestaurants(string? name, string? address, string? city, string? zipcode, string? latitude, string? longitude, string? telephone, string? openingHours, string? delivery, string? linkType, string? link)
 	{
 		string query = _getRestaurantsQuery + " WHERE";
 		if (name != null) query += $" LOWER(r.name) LIKE LOWER('%' || '{name}' || '%') OR";
@@ -34,8 +34,8 @@ public class PostgreDb : IDb
 		if (latitude != null) query += $" LOWER(latitude::varchar(256)) LIKE LOWER('%' || '{latitude}' || '%') OR";
 		if (longitude != null) query += $" LOWER(longitude::varchar(256)) LIKE LOWER('%' || '{longitude}' || '%') OR";
 		if (delivery != null) query += $" LOWER(delivery::varchar(256)) LIKE LOWER('%' || '{delivery}' || '%') OR";
-		if (phone != null) query += $" LOWER(phone) LIKE LOWER('%' || '{phone}' || '%') OR";
-		if (openingHours != null) query += $" LOWER(opening_hours) LIKE LOWER('%' || '{openingHours}' || '%')";
+		if (telephone != null) query += $" LOWER(phone) LIKE LOWER('%' || '{telephone}' || '%') OR";
+		if (openingHours != null) query += $" LOWER(openingHours) LIKE LOWER('%' || '{openingHours}' || '%')";
 		query = query.Replace('\n', ' ').Trim();
 		if (query.EndsWith("OR")) query = query[..^2];
 		if (query.EndsWith("WHERE")) query = query.Replace("WHERE", "");
@@ -46,7 +46,7 @@ public class PostgreDb : IDb
 		while (await reader.ReadAsync())
 		{
 			var dto = ReaderToRestaurant(reader);
-			var restaurant = new RestaurantWithLinks(dto.Id, dto.Name, dto.Address, dto.Zipcode, dto.Latitude, dto.Longitude, dto.Phone, dto.OpeningHours, dto.Delivery, dto.City);
+			var restaurant = new RestaurantWithLinks(dto.Id, dto.Name, dto.Address, dto.Zipcode, dto.Latitude, dto.Longitude, dto.Telephone, dto.OpeningHours, dto.Delivery, dto.City);
 			await using var getLinksCmd = _dataSource.CreateCommand($"SELECT restaurantId, type, link FROM RestaurantLink JOIN Link ON RestaurantLink.linkType = Link.id WHERE restaurantId = {dto.Id}");
 			var linksReader = await getLinksCmd.ExecuteReaderAsync();
 			while (await linksReader.ReadAsync())
@@ -63,11 +63,11 @@ public class PostgreDb : IDb
 		{
 			if (r.WebsiteLinks != null)
 			{
-				restaurantsCsv.AddRange(r.WebsiteLinks.Select(l => new RestaurantCsv(r.Id, r.Name, r.Address, r.Zipcode, r.Latitude, r.Longitude, r.Phone, r.OpeningHours, r.Delivery, r.City, l.LinkType, l.Link)));
+				restaurantsCsv.AddRange(r.WebsiteLinks.Select(l => new RestaurantCsv(r.Id, r.Name, r.Address, r.Zipcode, r.Latitude, r.Longitude, r.Telephone, r.OpeningHours, r.Delivery, r.City, l.LinkType, l.Link)));
 			}
 			else
 			{
-				restaurantsCsv.Add(new RestaurantCsv(r.Id, r.Name, r.Address, r.Zipcode, r.Latitude, r.Longitude, r.Phone, r.OpeningHours, r.Delivery, r.City, null, null));
+				restaurantsCsv.Add(new RestaurantCsv(r.Id, r.Name, r.Address, r.Zipcode, r.Latitude, r.Longitude, r.Telephone, r.OpeningHours, r.Delivery, r.City, null, null));
 			}
 		}
 		var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture) { Delimiter = ";" };
@@ -112,8 +112,8 @@ public class PostgreDb : IDb
 	public async Task<RestaurantDTO> PostRestaurant(NewRestaurantDTO restaurant)
 	{
 		//Inserting restaurant into the database
-		string insertQuery = $"INSERT INTO restaurant(name,address,zipcode,latitude,longitude,phone,opening_hours,delivery,cityid) " +
-		                     $"VALUES('{restaurant.Name}', '{restaurant.Address}', {restaurant.Zipcode}, {restaurant.Latitude}, {restaurant.Longitude}, {StringToSqlString(restaurant.Phone)}, {StringToSqlString(restaurant.OpeningHours)}, {restaurant.Delivery}, {await GetCityId(restaurant.City)})";
+		string insertQuery = $"INSERT INTO restaurant(name,address,zipcode,latitude,longitude,telephone,openingHours,delivery,cityid) " +
+		                     $"VALUES('{restaurant.Name}', '{restaurant.Address}', {restaurant.Zipcode}, {restaurant.Latitude}, {restaurant.Longitude}, {StringToSqlString(restaurant.Telephone)}, {StringToSqlString(restaurant.OpeningHours)}, {restaurant.Delivery}, {await GetCityId(restaurant.City)})";
 		await using var cmd = _dataSource.CreateCommand(insertQuery);
 		int changedRows = await cmd.ExecuteNonQueryAsync();
 		
@@ -135,8 +135,8 @@ public class PostgreDb : IDb
 		                     $"zipcode={restaurant.Zipcode}," +
 		                     $"latitude={restaurant.Latitude}," +
 		                     $"longitude={restaurant.Longitude}," +
-		                     $"phone={StringToSqlString(restaurant.Phone)}," +
-		                     $"opening_hours={StringToSqlString(restaurant.OpeningHours)}," +
+		                     $"phone={StringToSqlString(restaurant.Telephone)}," +
+		                     $"openingHours={StringToSqlString(restaurant.OpeningHours)}," +
 		                     $"delivery={restaurant.Delivery}," +
 		                     $"cityId={await GetCityId(restaurant.City)} " +
 		                     $"WHERE id={restaurant.Id}";
@@ -251,12 +251,12 @@ public class PostgreDb : IDb
 		double latitude = reader.GetDouble(4);
 		double longitude = reader.GetDouble(5);
 		object phoneObject = reader.GetValue(6);
-		string? phone = phoneObject is DBNull ? null : (string)phoneObject;
+		string? telephone = phoneObject is DBNull ? null : (string)phoneObject;
 		object openingHoursObject = reader.GetValue(7);
 		string? openingHours = openingHoursObject is DBNull ? null : (string)openingHoursObject;
 		bool delivery = reader.GetBoolean(8);
 		string cityName = reader.GetString(9);
-		return new RestaurantDTO(id, name, address, zipcode, latitude, longitude, phone, openingHours, delivery, cityName);
+		return new RestaurantDTO(id, name, address, zipcode, latitude, longitude, telephone, openingHours, delivery, cityName);
 	}
 
 	private LinkDTO ReaderToLink(NpgsqlDataReader reader)

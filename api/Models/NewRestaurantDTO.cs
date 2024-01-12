@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace api.Models;
 
-public class NewRestaurantDTO(string name, string address, int zipcode, double latitude, double longitude, string? phone, string? openingHours, bool delivery, string city)
+public class NewRestaurantDTO(string name, string address, int zipcode, double latitude, double longitude, string? telephone, string? openingHours, bool delivery, string city)
 {
 	/// <summary>
 	/// Restaurant name
@@ -43,14 +43,14 @@ public class NewRestaurantDTO(string name, string address, int zipcode, double l
 	/// Phone number used by the restaurant
 	/// </summary>
 	/// <example>014649400</example>
-	[JsonProperty(PropertyName = "phone")]
-	public string? Phone { get; set; } = phone;
+	[JsonProperty(PropertyName = "telephone")]
+	public string? Telephone { get; set; } = telephone;
 	
 	/// <summary>
 	/// Working hours
 	/// </summary>
 	/// <example>Mon-Sat 12:00-20:00</example>
-	[JsonProperty(PropertyName = "opening_hours")]
+	[JsonProperty(PropertyName = "openingHours")]
 	public string? OpeningHours { get; set; } = openingHours;
 	
 	/// <summary>
