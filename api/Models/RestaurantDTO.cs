@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace api.Models;
 
 public class RestaurantDTO(int? id, string name, string address, int zipcode, double latitude, double longitude, string? phone, string? openingHours, bool delivery, string city)
@@ -7,5 +9,6 @@ public class RestaurantDTO(int? id, string name, string address, int zipcode, do
 	/// Unique identifier of the restaurant
 	/// </summary>
 	/// <example>1</example>
+	[JsonProperty(PropertyName = "id")]
 	public int? Id { get; set; } = id;
 }

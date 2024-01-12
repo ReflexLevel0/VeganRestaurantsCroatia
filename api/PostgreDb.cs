@@ -1,5 +1,8 @@
-using System.Text;
+using System.Globalization;
 using api.Models;
+using CsvHelper;
+using CsvHelper.Configuration;
+using Newtonsoft.Json;
 using Npgsql;
 
 namespace api;
@@ -21,13 +24,64 @@ public class PostgreDb : IDb
 
 	public async Task<NpgsqlConnection> OpenConnectionAsync() => await _dataSource.OpenConnectionAsync();
 
-	public async IAsyncEnumerable<RestaurantDTO> GetRestaurants()
+	public async IAsyncEnumerable<RestaurantWithLinks> GetRestaurants(string? name, string? address, string? city, string? zipcode, string? latitude, string? longitude, string? phone, string? openingHours, string? delivery, string? linkType, string? link)
 	{
-		await using var cmd = _dataSource.CreateCommand(_getRestaurantsQuery);
+		string query = _getRestaurantsQuery + " WHERE";
+		if (name != null) query += $" LOWER(r.name) LIKE LOWER('%' || '{name}' || '%') OR";
+		if (address != null) query += $" LOWER(address) LIKE LOWER('%' || '{address}' || '%') OR";
+		if (city != null) query += $" LOWER(c.name) LIKE LOWER('%' || '{city}' || '%') OR";
+		if (zipcode != null) query += $" LOWER(zipcode::varchar(256)) LIKE LOWER('%' || '{zipcode}' || '%') OR";
+		if (latitude != null) query += $" LOWER(latitude::varchar(256)) LIKE LOWER('%' || '{latitude}' || '%') OR";
+		if (longitude != null) query += $" LOWER(longitude::varchar(256)) LIKE LOWER('%' || '{longitude}' || '%') OR";
+		if (delivery != null) query += $" LOWER(delivery::varchar(256)) LIKE LOWER('%' || '{delivery}' || '%') OR";
+		if (phone != null) query += $" LOWER(phone) LIKE LOWER('%' || '{phone}' || '%') OR";
+		if (openingHours != null) query += $" LOWER(opening_hours) LIKE LOWER('%' || '{openingHours}' || '%')";
+		query = query.Replace('\n', ' ').Trim();
+		if (query.EndsWith("OR")) query = query[..^2];
+		if (query.EndsWith("WHERE")) query = query.Replace("WHERE", "");
+		
+		await using var cmd = _dataSource.CreateCommand(query);
 		await using var reader = await cmd.ExecuteReaderAsync();
+		var restaurants = new List<RestaurantWithLinks>();
 		while (await reader.ReadAsync())
 		{
-			yield return ReaderToRestaurant(reader);
+			var dto = ReaderToRestaurant(reader);
+			var restaurant = new RestaurantWithLinks(dto.Id, dto.Name, dto.Address, dto.Zipcode, dto.Latitude, dto.Longitude, dto.Phone, dto.OpeningHours, dto.Delivery, dto.City);
+			await using var getLinksCmd = _dataSource.CreateCommand($"SELECT restaurantId, type, link FROM RestaurantLink JOIN Link ON RestaurantLink.linkType = Link.id WHERE restaurantId = {dto.Id}");
+			var linksReader = await getLinksCmd.ExecuteReaderAsync();
+			while (await linksReader.ReadAsync())
+			{
+				restaurant.WebsiteLinks ??= new List<LinkDTO>();
+				restaurant.WebsiteLinks.Add(new LinkDTO(linksReader.GetInt32(0), linksReader.GetString(1), linksReader.GetString(2)));
+			}
+
+			restaurants.Add(restaurant);
+		}
+
+		var restaurantsCsv = new List<RestaurantCsv>();
+		foreach (var r in restaurants)
+		{
+			if (r.WebsiteLinks != null)
+			{
+				restaurantsCsv.AddRange(r.WebsiteLinks.Select(l => new RestaurantCsv(r.Id, r.Name, r.Address, r.Zipcode, r.Latitude, r.Longitude, r.Phone, r.OpeningHours, r.Delivery, r.City, l.LinkType, l.Link)));
+			}
+			else
+			{
+				restaurantsCsv.Add(new RestaurantCsv(r.Id, r.Name, r.Address, r.Zipcode, r.Latitude, r.Longitude, r.Phone, r.OpeningHours, r.Delivery, r.City, null, null));
+			}
+		}
+		var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture) { Delimiter = ";" };
+		await File.WriteAllTextAsync("/tmp/veganRestaurants.json", JsonConvert.SerializeObject(restaurants));
+		await using (var writer = new StreamWriter("/tmp/veganRestaurants.csv")) 
+		await using (var csv = new CsvWriter(writer, csvConfig))
+		{
+			csv.Context.RegisterClassMap<RestaurantCsvMap>();
+			await csv.WriteRecordsAsync(restaurantsCsv);
+		}
+		
+		foreach (var r in restaurants)
+		{
+			yield return r;
 		}
 	}
 

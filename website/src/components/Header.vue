@@ -13,12 +13,17 @@ export default {
         logout({logoutParams: {returnTo: window.location.origin}});
       },
       refreshCopies: () => {
-        let link = document.createElement("a");
-        link.download = name;
-        link.href = "http://localhost:3000/json";
-        link.click();
-        link.href = "http://localhost:3000/csv";
-        link.click();
+        let jsonLink = document.createElement("a");
+        jsonLink.href = "http://localhost:3000/file/json";
+        jsonLink.download = "data.json";
+        document.body.appendChild(jsonLink)
+        jsonLink.click();
+
+        let csvLink = document.createElement("a");
+        csvLink.href = "http://localhost:3000/file/csv";
+        csvLink.download = "data.csv";
+        document.body.appendChild(csvLink)
+        csvLink.click();
       },
       user,
       isAuthenticated

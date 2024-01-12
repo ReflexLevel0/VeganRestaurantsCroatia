@@ -1,4 +1,5 @@
 using api.Models;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -8,18 +9,32 @@ namespace api.Controllers;
 [ApiController]
 public class RestaurantController(IDb db) : ControllerBase
 {
-	
-
 	/// <summary>
 	/// Returns all restaurants
 	/// </summary>
 	/// <response code="200">Restaurants fetched</response>
 	[HttpGet]
 	[Produces("application/json")]
-	public async Task<ActionResult<ApiResponseWrapper>> GetRestaurants()
+	public async Task<ActionResult<ApiResponseWrapper>> GetRestaurants(string? all, string? name, string? address, string? city, string? zipcode, string? latitude, string? longitude, string? phone, string? openingHours, string? delivery, string? linkType, string? link)
 	{
 		var restaurants = new List<RestaurantDTO?>();
-		await foreach (var restaurant in db.GetRestaurants())
+
+		if (all != null)
+		{
+			name = all;
+			address = all;
+			city = all;
+			zipcode = all;
+			latitude = all;
+			longitude = all;
+			phone = all;
+			openingHours = all;
+			delivery = all;
+			linkType = all;
+			link = all;
+		}
+		
+		await foreach (var restaurant in db.GetRestaurants(name, address, city, zipcode, latitude, longitude, phone, openingHours, delivery, linkType, link))
 		{
 			restaurants.Add(restaurant);
 		}

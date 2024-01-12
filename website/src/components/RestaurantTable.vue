@@ -2,7 +2,14 @@
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import 'primevue/resources/themes/lara-light-teal/theme.css'
+import {useAccountStore} from "@/stores/accountStore";
 export default {
+  setup(){
+    const accountStore = useAccountStore()
+    return {
+      accountStore
+    }
+  },
   data() {
     return {
       searchOption: "all",
@@ -32,10 +39,10 @@ export default {
   methods: {
     async refreshData(e) {
       e?.preventDefault()
-      fetch(`http://localhost:3000/?${this.$data.searchOption}=${this.$data.searchText}`)
+      fetch(`http://localhost:3000/Restaurant?${this.$data.searchOption}=${this.$data.searchText}`)
           .then(data => data.json())
           .then(json => {
-            this.$data.restaurants = json
+            this.$data.restaurants = JSON.parse(json.response)
             for(const restaurant of this.$data.restaurants){
               let linkString = ''
               if(restaurant.websitelinks !== null) {
@@ -59,10 +66,10 @@ export default {
 
 <template>
 
-  <div v-if="filtered">
-    <a href="http://localhost:3000/filtered/json">Filtered JSON file</a>
+  <div v-if="filtered && accountStore.isAuthenticated">
+    <a href="http://localhost:3000/filteredJson" download>Filtered JSON file</a>
     <br/>
-    <a href="http://localhost:3000/filtered/csv">Filtered CSV file</a>
+    <a href="http://localhost:3000/filteredCsv" download>Filtered CSV file</a>
   </div>
 
   <form>

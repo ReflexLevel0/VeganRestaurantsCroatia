@@ -41,9 +41,9 @@ export default {
     },
     refreshCopies(){
       let link = document.createElement("a")
-      link.href = "http://localhost:3000/json"
+      link.href = "http://localhost:3000/file/json"
       link.click()
-      link.href = "http://localhost:3000/csv"
+      link.href = "http://localhost:3000/file/csv"
       link.click()
     },
     onAccountClick(){
