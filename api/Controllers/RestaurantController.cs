@@ -17,7 +17,7 @@ public class RestaurantController(IDb db) : ControllerBase
 	[Produces("application/json")]
 	public async Task<ActionResult<ApiResponseWrapper>> GetRestaurants(string? all, string? name, string? address, string? city, string? zipcode, string? latitude, string? longitude, string? telephone, string? openingHours, string? delivery, string? linkType, string? link)
 	{
-		var restaurants = new List<RestaurantDTO?>();
+		var wrapper = new RestaurantWrapper();
 
 		if (all != null)
 		{
@@ -34,12 +34,12 @@ public class RestaurantController(IDb db) : ControllerBase
 			link = all;
 		}
 		
-		await foreach (var restaurant in db.GetRestaurants(name, address, city, zipcode, latitude, longitude, telephone, openingHours, delivery, linkType, link))
+		await foreach (var r in db.GetRestaurants(name, address, city, zipcode, latitude, longitude, telephone, openingHours, delivery, linkType, link))
 		{
-			restaurants.Add(restaurant);
+			wrapper.Restaurants.Add(r.ToJsonLd());
 		}
 
-		return Ok(new ApiResponseWrapper("OK", "Fetched restaurant objects", JsonConvert.SerializeObject(restaurants)));
+		return Ok(new ApiResponseWrapper("OK", "Fetched restaurant objects", JsonConvert.SerializeObject(wrapper)));
 	}
 
 	/// <summary>
@@ -52,10 +52,11 @@ public class RestaurantController(IDb db) : ControllerBase
 	[Produces("application/json")]
 	public async Task<ActionResult<ApiResponseWrapper>> GetRestaurant(int id)
 	{
-		var restaurant = await db.GetRestaurantById(id);
-		return restaurant == null ? 
-			NotFound(new ApiResponseWrapper("Not Found", "Restaurant with specified id not found", null)) : 
-			Ok(new ApiResponseWrapper("OK", "Fetched restaurant with specified id", JsonConvert.SerializeObject(restaurant)));
+		var r = await db.GetRestaurantById(id);
+		if (r == null) return NotFound(new ApiResponseWrapper("Not Found", "Restaurant with specified id not found", null));
+		var wrapper = new RestaurantWrapper();
+		wrapper.Restaurants.Add(r.ToJsonLd());
+		return Ok(new ApiResponseWrapper("OK", "Fetched restaurant with specified id", JsonConvert.SerializeObject(wrapper)));
 	}
 
 	/// <summary>
@@ -71,7 +72,9 @@ public class RestaurantController(IDb db) : ControllerBase
 		try
 		{
 			var r = await db.PostRestaurant(restaurant);
-			return StatusCode(201, new ApiResponseWrapper("CREATED", "Added new restaurant", JsonConvert.SerializeObject(r)));
+			var wrapper = new RestaurantWrapper();
+			wrapper.Restaurants.Add(r.ToJsonLd());
+			return StatusCode(201, new ApiResponseWrapper("CREATED", "Added new restaurant", JsonConvert.SerializeObject(wrapper)));
 		}
 		catch (Exception ex)
 		{
@@ -113,7 +116,9 @@ public class RestaurantController(IDb db) : ControllerBase
 			var r = await db.GetRestaurantById((int)restaurant.Id);
 			if (r == null) return NotFound(new ApiResponseWrapper("Not Found", "Restaurant with specified id not found", null));
 			r = await db.PutRestaurant(restaurant);
-			return Ok(new ApiResponseWrapper("OK", "Updated restaurant", JsonConvert.SerializeObject(r)));
+			var wrapper = new RestaurantWrapper();
+			wrapper.Restaurants.Add(r.ToJsonLd());
+			return Ok(new ApiResponseWrapper("OK", "Updated restaurant", JsonConvert.SerializeObject(wrapper)));
 		}
 		catch (Exception ex)
 		{
