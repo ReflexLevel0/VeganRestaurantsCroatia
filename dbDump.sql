@@ -428,6 +428,7 @@ INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, lon
 -- Data for Name: restaurantlink; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
+INSERT INTO public.restaurantlink (restaurantid, linktype, link) VALUES (1, 1, 'vegehop.hr');
 INSERT INTO public.restaurantlink (restaurantid, linktype, link) VALUES (1, 2, 'facebook.com/vegehop');
 INSERT INTO public.restaurantlink (restaurantid, linktype, link) VALUES (1, 3, 'instagram.com/vegehop_restaurant');
 INSERT INTO public.restaurantlink (restaurantid, linktype, link) VALUES (1, 4, 'youtube.com/user/Vegehop');
@@ -473,8 +474,6 @@ INSERT INTO public.restaurantlink (restaurantid, linktype, link) VALUES (15, 1, 
 INSERT INTO public.restaurantlink (restaurantid, linktype, link) VALUES (15, 2, 'facebook.com/biomaniahr');
 INSERT INTO public.restaurantlink (restaurantid, linktype, link) VALUES (15, 3, 'instagram.com/biomaniahr');
 INSERT INTO public.restaurantlink (restaurantid, linktype, link) VALUES (15, 7, 'tripadvisor.com/Restaurant_Review-g303802-d14997286-Reviews-BioMania_Street_Food-Bol_Brac_Island_Split_Dalmatia_County_Dalmatia.html');
-INSERT INTO public.restaurantlink (restaurantid, linktype, link) VALUES (2, 8, 'littffer.com');
-INSERT INTO public.restaurantlink (restaurantid, linktype, link) VALUES (2, 4, 'littffer.com');
 
 
 --
