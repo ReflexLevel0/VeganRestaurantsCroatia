@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace api.Models;
 
-public class RestaurantJsonld(int? id, string name, string address, int zipcode, double latitude, double longitude, string? telephone, string? openingHours, bool delivery, string city)
+public class RestaurantJsonld(int? id, string name, string address, int zipcode, double latitude, double longitude, string? telephone, string? openingHours, bool delivery, string city, List<LinkDTO>? websiteLinks)
 {
 	[JsonProperty(PropertyName = "@type")]
 	public string Type { get; } = "Restaurant";
@@ -62,4 +62,10 @@ public class RestaurantJsonld(int? id, string name, string address, int zipcode,
 	/// <example>true</example>
 	[JsonProperty(PropertyName = "delivery")]
 	public bool Delivery { get; set; } = delivery;
+
+	/// <summary>
+	/// A string containing all website links for this restaurant
+	/// </summary>
+	[JsonProperty(PropertyName = "websiteLinks")]
+	public List<LinkDTO>? WebsiteLinks { get; set; } = websiteLinks;
 }

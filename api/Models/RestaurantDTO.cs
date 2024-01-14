@@ -11,9 +11,4 @@ public class RestaurantDTO(int? id, string name, string address, int zipcode, do
 	/// <example>1</example>
 	[JsonProperty(PropertyName = "id")]
 	public int? Id { get; set; } = id;
-
-	public RestaurantJsonld ToJsonLd()
-	{
-		return new RestaurantJsonld(Id, Name, Address, Zipcode, Latitude, Longitude, Telephone, OpeningHours, Delivery, City);
-	}
 }

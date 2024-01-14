@@ -34,28 +34,25 @@ public class PostgreDb : IDb
 		if (latitude != null) query += $" LOWER(latitude::varchar(256)) LIKE LOWER('%' || '{latitude}' || '%') OR";
 		if (longitude != null) query += $" LOWER(longitude::varchar(256)) LIKE LOWER('%' || '{longitude}' || '%') OR";
 		if (delivery != null) query += $" LOWER(delivery::varchar(256)) LIKE LOWER('%' || '{delivery}' || '%') OR";
-		if (telephone != null) query += $" LOWER(phone) LIKE LOWER('%' || '{telephone}' || '%') OR";
+		if (telephone != null) query += $" LOWER(telephone) LIKE LOWER('%' || '{telephone}' || '%') OR";
 		if (openingHours != null) query += $" LOWER(openingHours) LIKE LOWER('%' || '{openingHours}' || '%')";
 		query = query.Replace('\n', ' ').Trim();
 		if (query.EndsWith("OR")) query = query[..^2];
 		if (query.EndsWith("WHERE")) query = query.Replace("WHERE", "");
-		
-		await using var cmd = _dataSource.CreateCommand(query);
-		await using var reader = await cmd.ExecuteReaderAsync();
-		var restaurants = new List<RestaurantWithLinks>();
-		while (await reader.ReadAsync())
-		{
-			var dto = ReaderToRestaurant(reader);
-			var restaurant = new RestaurantWithLinks(dto.Id, dto.Name, dto.Address, dto.Zipcode, dto.Latitude, dto.Longitude, dto.Telephone, dto.OpeningHours, dto.Delivery, dto.City);
-			await using var getLinksCmd = _dataSource.CreateCommand($"SELECT restaurantId, type, link FROM RestaurantLink JOIN Link ON RestaurantLink.linkType = Link.id WHERE restaurantId = {dto.Id}");
-			var linksReader = await getLinksCmd.ExecuteReaderAsync();
-			while (await linksReader.ReadAsync())
-			{
-				restaurant.WebsiteLinks ??= new List<LinkDTO>();
-				restaurant.WebsiteLinks.Add(new LinkDTO(linksReader.GetInt32(0), linksReader.GetString(1), linksReader.GetString(2)));
-			}
 
-			restaurants.Add(restaurant);
+		List<RestaurantWithLinks> restaurants;
+		await using (var cmd = _dataSource.CreateCommand(query))
+		{
+			await using (var reader = await cmd.ExecuteReaderAsync())
+			{
+				restaurants = new List<RestaurantWithLinks>();
+				while (await reader.ReadAsync())
+				{
+					var r = ReaderToRestaurant(reader);
+					var restaurant = await RestaurantToRestaurantWithLinks(r);
+					restaurants.Add(restaurant);
+				}
+			}
 		}
 
 		var restaurantsCsv = new List<RestaurantCsv>();
@@ -72,12 +69,14 @@ public class PostgreDb : IDb
 		}
 		var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture) { Delimiter = ";" };
 		await File.WriteAllTextAsync("/tmp/veganRestaurants.json", JsonConvert.SerializeObject(restaurants));
-		await using (var writer = new StreamWriter("/tmp/veganRestaurants.csv")) 
-		await using (var csv = new CsvWriter(writer, csvConfig))
+		await using (var writer = new StreamWriter("/tmp/veganRestaurants.csv"))
 		{
-			csv.Context.RegisterClassMap<RestaurantCsvMap>();
-			await csv.WriteRecordsAsync(restaurantsCsv);
-		}
+			await using (var csv = new CsvWriter(writer, csvConfig))
+			{
+				csv.Context.RegisterClassMap<RestaurantCsvMap>();
+				await csv.WriteRecordsAsync(restaurantsCsv);
+			}
+		} 
 		
 		foreach (var r in restaurants)
 		{
@@ -85,31 +84,33 @@ public class PostgreDb : IDb
 		}
 	}
 
-	public async Task<RestaurantDTO?> GetRestaurantById(int id)
+	public async Task<RestaurantWithLinks?> GetRestaurantById(int id)
 	{
 		await using var cmd = _dataSource.CreateCommand($"{_getRestaurantsQuery} WHERE r.id = {id}");
 		await using var reader = await cmd.ExecuteReaderAsync();
 		while (await reader.ReadAsync())
 		{
-			return ReaderToRestaurant(reader);
+			var r = ReaderToRestaurant(reader);
+			return await RestaurantToRestaurantWithLinks(r);
 		}
 
 		return null;
 	}
 	
-	public async Task<RestaurantDTO?> GetRestaurantByName(string name)
+	public async Task<RestaurantWithLinks?> GetRestaurantByName(string name)
 	{
 		await using var cmd = _dataSource.CreateCommand($"{_getRestaurantsQuery} WHERE r.name = '{name}'");
 		await using var reader = await cmd.ExecuteReaderAsync();
 		while (await reader.ReadAsync())
 		{
-			return ReaderToRestaurant(reader);
+			var r = ReaderToRestaurant(reader);
+			return await RestaurantToRestaurantWithLinks(r);
 		}
 
 		return null;
 	}
 
-	public async Task<RestaurantDTO> PostRestaurant(NewRestaurantDTO restaurant)
+	public async Task<RestaurantWithLinks> PostRestaurant(NewRestaurantDTO restaurant)
 	{
 		//Inserting restaurant into the database
 		string insertQuery = $"INSERT INTO restaurant(name,address,zipcode,latitude,longitude,telephone,openingHours,delivery,cityid) " +
@@ -123,7 +124,7 @@ public class PostgreDb : IDb
 		return r;
 	}
 	
-	public async Task<RestaurantDTO> PutRestaurant(RestaurantDTO restaurant)
+	public async Task<RestaurantWithLinks> PutRestaurant(RestaurantDTO restaurant)
 	{
 		//Inserting the restaurant into the database if ID isn't specified
 		if (restaurant.Id == null) return await PostRestaurant(restaurant);
@@ -169,6 +170,18 @@ public class PostgreDb : IDb
 		//Checking if link type exists (will throw exception if it doesn't exist)
 		if(type != null) await GetLinkTypeId(type, false);
 		
+		await using var cmd = _dataSource.CreateCommand(_getLinksQuery + 
+		                                                $" WHERE restaurantid::text LIKE '{(restaurantId == null ? "%%" : restaurantId)}'" +
+		                                                $" AND type::text LIKE '{(type == null ? "%%" : type)}'");
+		await using var reader = await cmd.ExecuteReaderAsync();
+		while (await reader.ReadAsync())
+		{
+			yield return ReaderToLink(reader);
+		}
+	}
+
+	private async IAsyncEnumerable<LinkDTO> PrivateGetLinks(int? restaurantId, string? type)
+	{
 		await using var cmd = _dataSource.CreateCommand(_getLinksQuery + 
 		                                                $" WHERE restaurantid::text LIKE '{(restaurantId == null ? "%%" : restaurantId)}'" +
 		                                                $" AND type::text LIKE '{(type == null ? "%%" : type)}'");
@@ -289,4 +302,13 @@ public class PostgreDb : IDb
 	}
 
 	private string StringToSqlString(string? value) => value == null ? "null" : $"'{value}'";
+	
+	private async Task<RestaurantWithLinks> RestaurantToRestaurantWithLinks(RestaurantDTO restaurant){
+		var restaurantWithLinks = new RestaurantWithLinks(restaurant.Id, restaurant.Name, restaurant.Address, restaurant.Zipcode, restaurant.Latitude, restaurant.Longitude, restaurant.Telephone, restaurant.OpeningHours, restaurant.Delivery, restaurant.City, new List<LinkDTO>());
+		await foreach (var link in PrivateGetLinks(restaurant.Id, null))
+		{
+			restaurantWithLinks.WebsiteLinks?.Add(link);
+		}
+		return restaurantWithLinks;
+	}
 }

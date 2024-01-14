@@ -42,17 +42,23 @@ export default {
       fetch(`http://localhost:3000/Restaurant?${this.$data.searchOption}=${this.$data.searchText}`)
           .then(data => data.json())
           .then(json => {
-            this.$data.restaurants = JSON.parse(json.response)
+            this.$data.restaurants = JSON.parse(json.response)["@graph"]
             for(const restaurant of this.$data.restaurants){
+
+              //Combining all links into a single string
               let linkString = ''
-              if(restaurant.websitelinks !== null) {
-                for(const link of restaurant.websitelinks){
+              if(restaurant.websiteLinks !== null) {
+                for(const link of restaurant.websiteLinks){
                   if(linkString !== '') linkString += ', '
                   linkString += `${link.link}`
                 }
               }
-              restaurant.websitelinks = linkString
+              restaurant.websiteLinks = linkString
+
+              //Parsing restaurant city
+              restaurant.city = restaurant.address.addressLocality.split(',')[0];
             }
+
             this.$data.filtered = this.$data.searchOption!=='all' || this.$data.searchText!==''
           })
     }
@@ -82,15 +88,15 @@ export default {
 
   <DataTable :value="this.$data.restaurants">
     <Column field="name" header="Name" :sortable="true"></Column>
-    <Column field="address" header="Address" :sortable="true"></Column>
+    <Column field="address.streetAddress" header="Address" :sortable="true"></Column>
     <Column field="city" header="City" :sortable="true"></Column>
-    <Column field="zipcode" header="Zipcode" :sortable="true"></Column>
+    <Column field="address.postalCode" header="Zipcode" :sortable="true"></Column>
     <Column field="latitude" header="Latitude" :sortable="true"></Column>
     <Column field="longitude" header="Longitude" :sortable="true"></Column>
     <Column field="telephone" header="Phone" :sortable="true"></Column>
     <Column field="openingHours" header="Opening hours" :sortable="true"></Column>
     <Column field="delivery" header="Delivery" :sortable="true"></Column>
-    <Column field="websitelinks" header="Website links" :sortable="true"></Column>
+    <Column field="websiteLinks" header="Website links" :sortable="true"></Column>
   </DataTable>
 
 </template>
