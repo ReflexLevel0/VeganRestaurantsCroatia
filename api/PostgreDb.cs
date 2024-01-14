@@ -54,7 +54,13 @@ public class PostgreDb : IDb
 				}
 			}
 		}
-
+		
+		//Writing data to a JSON file
+		var jsonRestaurants = restaurants.Select(r => new RestaurantJsonld(r.Id, r.Name, r.Address, r.Zipcode, r.Latitude, r.Longitude, r.Telephone, r.OpeningHours, r.Delivery, r.City, r.WebsiteLinks)).ToList();
+		await File.WriteAllTextAsync("/tmp/veganRestaurants.json", JsonConvert.SerializeObject(jsonRestaurants));
+		
+		//Writing data to a CSV file
+		var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture) { Delimiter = ";" };
 		var restaurantsCsv = new List<RestaurantCsv>();
 		foreach (var r in restaurants)
 		{
@@ -67,8 +73,6 @@ public class PostgreDb : IDb
 				restaurantsCsv.Add(new RestaurantCsv(r.Id, r.Name, r.Address, r.Zipcode, r.Latitude, r.Longitude, r.Telephone, r.OpeningHours, r.Delivery, r.City, null, null));
 			}
 		}
-		var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture) { Delimiter = ";" };
-		await File.WriteAllTextAsync("/tmp/veganRestaurants.json", JsonConvert.SerializeObject(restaurants));
 		await using (var writer = new StreamWriter("/tmp/veganRestaurants.csv"))
 		{
 			await using (var csv = new CsvWriter(writer, csvConfig))
