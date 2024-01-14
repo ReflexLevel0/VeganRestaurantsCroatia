@@ -1,8 +1,4 @@
-using System.Globalization;
 using api.Models;
-using CsvHelper;
-using CsvHelper.Configuration;
-using Newtonsoft.Json;
 using Npgsql;
 
 namespace api;
@@ -54,34 +50,7 @@ public class PostgreDb : IDb
 				}
 			}
 		}
-		
-		//Writing data to a JSON file
-		var jsonRestaurants = restaurants.Select(r => new RestaurantJsonld(r.Id, r.Name, r.Address, r.Zipcode, r.Latitude, r.Longitude, r.Telephone, r.OpeningHours, r.Delivery, r.City, r.WebsiteLinks)).ToList();
-		await File.WriteAllTextAsync("/tmp/veganRestaurants.json", JsonConvert.SerializeObject(jsonRestaurants));
-		
-		//Writing data to a CSV file
-		var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture) { Delimiter = ";" };
-		var restaurantsCsv = new List<RestaurantCsv>();
-		foreach (var r in restaurants)
-		{
-			if (r.WebsiteLinks != null)
-			{
-				restaurantsCsv.AddRange(r.WebsiteLinks.Select(l => new RestaurantCsv(r.Id, r.Name, r.Address, r.Zipcode, r.Latitude, r.Longitude, r.Telephone, r.OpeningHours, r.Delivery, r.City, l.LinkType, l.Link)));
-			}
-			else
-			{
-				restaurantsCsv.Add(new RestaurantCsv(r.Id, r.Name, r.Address, r.Zipcode, r.Latitude, r.Longitude, r.Telephone, r.OpeningHours, r.Delivery, r.City, null, null));
-			}
-		}
-		await using (var writer = new StreamWriter("/tmp/veganRestaurants.csv"))
-		{
-			await using (var csv = new CsvWriter(writer, csvConfig))
-			{
-				csv.Context.RegisterClassMap<RestaurantCsvMap>();
-				await csv.WriteRecordsAsync(restaurantsCsv);
-			}
-		} 
-		
+
 		foreach (var r in restaurants)
 		{
 			yield return r;

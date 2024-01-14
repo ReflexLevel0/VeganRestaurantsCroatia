@@ -1,4 +1,3 @@
-using System.Reflection;
 using api;
 using api.Models;
 
@@ -17,7 +16,9 @@ builder.Services.AddSwaggerGen(options =>
 	// options.IncludeXmlComments(xmlPath);
 });
 string dbConnectionString = File.ReadAllText("dbConnectionString.txt");
-builder.Services.AddSingleton<IDb>(_ => new PostgreDb(dbConnectionString));
+var db = new PostgreDb(dbConnectionString);
+builder.Services.AddSingleton<IDb>(_ => db);
+builder.Services.AddSingleton<FileHelper>(_ => new FileHelper(db));
 var app = builder.Build();
 app.Map("/error", () => new ApiResponseWrapper("Internal Server Error", "Something broke in the code :(", null));
 app.Map("/{*path}", () => new ApiResponseWrapper("Not Found", "API path doesn't exist", null));

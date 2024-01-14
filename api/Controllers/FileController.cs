@@ -5,12 +5,13 @@ namespace api.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class FileController : ControllerBase
+public class FileController(IDb db, FileHelper fileHelper) : ControllerBase
 {
 	[HttpGet("json")]
 	[Produces("application/json")]
 	public async Task<ActionResult<ApiResponseWrapper>> GetJson()
 	{
+		await fileHelper.RefreshJsonFile("../veganRestaurants.json");
 		byte[] fileBytes = await GetFileContent("../veganRestaurants.json");
 		return File(fileBytes, "application/json");
 	}
@@ -19,6 +20,7 @@ public class FileController : ControllerBase
 	[Produces("text/csv")]
 	public async Task<ActionResult<ApiResponseWrapper>> GetCsv()
 	{
+		await fileHelper.RefreshCsvFile("../veganRestaurants.csv");
 		byte[] fileBytes = await GetFileContent("../veganRestaurants.csv");
 		return File(fileBytes, "text/csv");
 	}
