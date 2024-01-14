@@ -1,3 +1,4 @@
+using System.Reflection;
 using api;
 using api.Models;
 
@@ -11,9 +12,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
 	options.SupportNonNullableReferenceTypes();
-	// var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-	// var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-	// options.IncludeXmlComments(xmlPath);
+	string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+	string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+	options.IncludeXmlComments(xmlPath);
 });
 string dbConnectionString = File.ReadAllText("dbConnectionString.txt");
 var db = new PostgreDb(dbConnectionString);
