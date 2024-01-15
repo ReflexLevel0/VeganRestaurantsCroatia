@@ -73,9 +73,9 @@ export default {
 <template>
 
   <div v-if="filtered && accountStore.isAuthenticated">
-    <a href="http://localhost:3000/filteredJson" download>Filtered JSON file</a>
+    <a href="http://localhost:3000/file/filteredJson" download>Filtered JSON file</a>
     <br/>
-    <a href="http://localhost:3000/filteredCsv" download>Filtered CSV file</a>
+    <a href="http://localhost:3000/file/filteredCsv" download>Filtered CSV file</a>
   </div>
 
   <form>

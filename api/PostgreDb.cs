@@ -11,11 +11,14 @@ public class PostgreDb : IDb
 	                                              "FROM restaurant r JOIN city c ON r.cityId=c.id";
 	private readonly string _getLinksQuery = "SELECT restaurantid, l.type, link FROM restaurantLink rl " +
 		"JOIN link l ON rl.linktype = l.id";
+
+	private readonly FileHelper _fileHelper;
 	
-	public PostgreDb(string connString)
+	public PostgreDb(string connString, FileHelper fileHelper)
 	{
 		var dataSourceBuilder = new NpgsqlDataSourceBuilder(connString);
 		_dataSource = dataSourceBuilder.Build();
+		_fileHelper = fileHelper;
 	}
 
 	public async Task<NpgsqlConnection> OpenConnectionAsync() => await _dataSource.OpenConnectionAsync();
@@ -51,6 +54,9 @@ public class PostgreDb : IDb
 			}
 		}
 
+		await _fileHelper.RefreshJsonFile(restaurants, "/tmp/veganRestaurants.json");
+		await _fileHelper.RefreshCsvFile(restaurants, "/tmp/veganRestaurants.csv");
+        
 		foreach (var r in restaurants)
 		{
 			yield return r;

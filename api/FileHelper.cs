@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace api;
 
-public class FileHelper(IDb db)
+public class FileHelper
 {
 	public async Task RefreshCsvFile(List<RestaurantWithLinks> restaurants, string filePath)
 	{
@@ -30,9 +30,9 @@ public class FileHelper(IDb db)
 		await csv.WriteRecordsAsync(restaurantsCsv);
 	}
 
-	public async Task RefreshCsvFile(string filePath)
+	public async Task RefreshCsvFile(string filePath, IDb db)
 	{
-		var restaurants = await GetAllRestaurants();
+		var restaurants = await GetAllRestaurants(db);
 		await RefreshCsvFile(restaurants, filePath);
 	}
 	
@@ -42,13 +42,13 @@ public class FileHelper(IDb db)
 		await File.WriteAllTextAsync(filePath, JsonConvert.SerializeObject(jsonRestaurants));
 	}
 
-	public async Task RefreshJsonFile(string filePath)
+	public async Task RefreshJsonFile(string filePath, IDb db)
 	{
-		var restaurants = await GetAllRestaurants();
+		var restaurants = await GetAllRestaurants(db);
 		await RefreshJsonFile(restaurants, filePath);
 	}
 
-	private async Task<List<RestaurantWithLinks>> GetAllRestaurants()
+	private async Task<List<RestaurantWithLinks>> GetAllRestaurants(IDb db)
 	{
 		var restaurants = new List<RestaurantWithLinks>();
 		await foreach (var r in db.GetRestaurants(null, null, null, null, null, null, null, null, null, null, null))

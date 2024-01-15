@@ -11,7 +11,7 @@ public class FileController(IDb db, FileHelper fileHelper) : ControllerBase
 	[Produces("application/json")]
 	public async Task<ActionResult<ApiResponseWrapper>> GetJson()
 	{
-		await fileHelper.RefreshJsonFile("../veganRestaurants.json");
+		await fileHelper.RefreshJsonFile("../veganRestaurants.json", db);
 		byte[] fileBytes = await GetFileContent("../veganRestaurants.json");
 		return File(fileBytes, "application/json");
 	}
@@ -20,7 +20,7 @@ public class FileController(IDb db, FileHelper fileHelper) : ControllerBase
 	[Produces("text/csv")]
 	public async Task<ActionResult<ApiResponseWrapper>> GetCsv()
 	{
-		await fileHelper.RefreshCsvFile("../veganRestaurants.csv");
+		await fileHelper.RefreshCsvFile("../veganRestaurants.csv", db);
 		byte[] fileBytes = await GetFileContent("../veganRestaurants.csv");
 		return File(fileBytes, "text/csv");
 	}
