@@ -16,29 +16,31 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-DROP DATABASE IF EXISTS vegancroatia;
---
--- Name: veganCroatia; Type: DATABASE; Schema: -; Owner: postgres
---
-
-CREATE DATABASE vegancroatia WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'en_US.UTF-8';
-
-
-ALTER DATABASE vegancroatia OWNER TO postgres;
-
-\connect vegancroatia
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
+ALTER TABLE IF EXISTS ONLY public.restaurantlink DROP CONSTRAINT IF EXISTS restaurantlink_restaurantid_fkey;
+ALTER TABLE IF EXISTS ONLY public.restaurantlink DROP CONSTRAINT IF EXISTS restaurantlink_linktype_fkey;
+ALTER TABLE IF EXISTS ONLY public.restaurant DROP CONSTRAINT IF EXISTS restaurant_cityid_fkey;
+ALTER TABLE IF EXISTS ONLY public.restaurantlink DROP CONSTRAINT IF EXISTS restaurantlink_pkey;
+ALTER TABLE IF EXISTS ONLY public.restaurant DROP CONSTRAINT IF EXISTS restaurant_pkey;
+ALTER TABLE IF EXISTS ONLY public.restaurant DROP CONSTRAINT IF EXISTS restaurant_name_key;
+ALTER TABLE IF EXISTS ONLY public.link DROP CONSTRAINT IF EXISTS link_type_key;
+ALTER TABLE IF EXISTS ONLY public.link DROP CONSTRAINT IF EXISTS link_pkey;
+ALTER TABLE IF EXISTS ONLY public.city DROP CONSTRAINT IF EXISTS city_pkey;
+ALTER TABLE IF EXISTS ONLY public.city DROP CONSTRAINT IF EXISTS city_name_key;
+ALTER TABLE IF EXISTS public.restaurant ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.link ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.city ALTER COLUMN id DROP DEFAULT;
+DROP SEQUENCE IF EXISTS public.restaurant_id_seq;
+DROP TABLE IF EXISTS public.restaurant;
+DROP VIEW IF EXISTS public.linkview;
+DROP TABLE IF EXISTS public.restaurantlink;
+DROP SEQUENCE IF EXISTS public.link_id_seq;
+DROP TABLE IF EXISTS public.link;
+DROP SEQUENCE IF EXISTS public.city_id_seq;
+DROP TABLE IF EXISTS public.city;
+DROP FUNCTION IF EXISTS public.linktypetoid(linktype text);
+DROP FUNCTION IF EXISTS public.citynametoid(cityname text);
+DROP TYPE IF EXISTS public.restaurantexporttype;
+DROP TYPE IF EXISTS public.linkexporttype;
 --
 -- Name: linkexporttype; Type: TYPE; Schema: public; Owner: postgres
 --
@@ -159,6 +161,28 @@ CREATE TABLE public.link (
 ALTER TABLE public.link OWNER TO postgres;
 
 --
+-- Name: link_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.link_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.link_id_seq OWNER TO postgres;
+
+--
+-- Name: link_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.link_id_seq OWNED BY public.link.id;
+
+
+--
 -- Name: restaurantlink; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -198,117 +222,12 @@ CREATE TABLE public.restaurant (
     latitude numeric(10,8) NOT NULL,
     longitude numeric(10,8) NOT NULL,
     telephone character varying(30),
-    openingHours character varying(255),
+    openinghours character varying(255),
     delivery boolean NOT NULL
 );
 
 
 ALTER TABLE public.restaurant OWNER TO postgres;
-
---
--- Name: restaurantview; Type: VIEW; Schema: public; Owner: postgres
---
-
-CREATE VIEW public.restaurantview AS
- SELECT r.id,
-    r.name,
-    r.address,
-    r.cityid,
-    r.zipcode,
-    r.latitude,
-    r.longitude,
-    r.phone,
-    r.opening_hours,
-    r.delivery,
-    city.name AS city
-   FROM (public.restaurant r
-     JOIN public.city ON ((r.cityid = city.id)))
-  ORDER BY r.id;
-
-
-ALTER VIEW public.restaurantview OWNER TO postgres;
-
---
--- Name: restaurantwithlinksview; Type: VIEW; Schema: public; Owner: postgres
---
-
-CREATE VIEW public.restaurantwithlinksview AS
- SELECT id,
-    name,
-    address,
-    cityid,
-    zipcode,
-    latitude,
-    longitude,
-    phone,
-    opening_hours,
-    delivery,
-    city,
-    ( SELECT jsonb_agg(websitelinkquery.websitelinktype) AS jsonb_agg
-           FROM ( SELECT ROW(linkmerge.type, linkmerge.link)::public.linkexporttype AS websitelinktype
-                   FROM ( SELECT linkview.type,
-                            linkview.link
-                           FROM public.linkview
-                          WHERE (linkview.restaurantid = restaurantview.id)) linkmerge) websitelinkquery) AS websitelinks
-   FROM public.restaurantview;
-
-
-ALTER VIEW public.restaurantwithlinksview OWNER TO postgres;
-
---
--- Name: restaurantcastview; Type: VIEW; Schema: public; Owner: postgres
---
-
-CREATE VIEW public.restaurantcastview AS
- SELECT ROW(id, name, address, zipcode, latitude, longitude, phone, opening_hours, delivery, (city)::character varying(30), websitelinks)::public.restaurantexporttype AS restaurantcast
-   FROM public.restaurantwithlinksview;
-
-
-ALTER VIEW public.restaurantcastview OWNER TO postgres;
-
---
--- Name: jsonrestaurantsview; Type: VIEW; Schema: public; Owner: postgres
---
-
-CREATE VIEW public.jsonrestaurantsview AS
- SELECT to_jsonb(restaurantcast) AS jsonrestaurant
-   FROM public.restaurantcastview;
-
-
-ALTER VIEW public.jsonrestaurantsview OWNER TO postgres;
-
---
--- Name: jsonexportview; Type: VIEW; Schema: public; Owner: postgres
---
-
-CREATE VIEW public.jsonexportview AS
- SELECT jsonb_agg(jsonrestaurant) AS jsonbagg
-   FROM public.jsonrestaurantsview;
-
-
-ALTER VIEW public.jsonexportview OWNER TO postgres;
-
---
--- Name: link_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.link_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.link_id_seq OWNER TO postgres;
-
---
--- Name: link_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.link_id_seq OWNED BY public.link.id;
-
 
 --
 -- Name: restaurant_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -331,31 +250,6 @@ ALTER SEQUENCE public.restaurant_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.restaurant_id_seq OWNED BY public.restaurant.id;
 
-
---
--- Name: restaurantcsvview; Type: VIEW; Schema: public; Owner: postgres
---
-
-CREATE VIEW public.restaurantcsvview AS
- SELECT r.id,
-    r.name,
-    r.address,
-    r.zipcode,
-    r.latitude,
-    r.longitude,
-    r.phone,
-    r.opening_hours,
-    r.delivery,
-    r.city,
-    l.type AS linktype,
-    rl.link
-   FROM ((public.restaurantview r
-     JOIN public.restaurantlink rl ON ((r.id = rl.restaurantid)))
-     JOIN public.link l ON ((rl.linktype = l.id)))
-  ORDER BY r.id, l.id;
-
-
-ALTER VIEW public.restaurantcsvview OWNER TO postgres;
 
 --
 -- Name: city id; Type: DEFAULT; Schema: public; Owner: postgres
@@ -407,21 +301,21 @@ INSERT INTO public.link (id, type) VALUES (8, 'x');
 -- Data for Name: restaurant; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (1, 'Restoran Vegehop', 'Vlaška ulica 79', 1, 10000, 45.81462343, 15.98823879, '014649400', 'Mon-Sat 12:00-20:00', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (2, 'Gajbica', 'Vlaška ulica 7', 1, 10000, 45.81391498, 15.97946271, '0915141274', 'Mon-Sat 11:00-18:00', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (3, 'OAZA Joyful Kitchen', 'Ulica Pavla Radića 9', 1, 10000, 45.81434540, 15.97565004, '0976602744', 'Mon-Fri 10:00-21:00,Sat 12:00-21:00', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (4, 'BEKIND', 'Ilica 75', 1, 10000, 45.81245345, 15.96450714, '015534763', 'Tue-Sat 09:00-22:00,Sun 09:00-16:00', false);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (5, 'Zrno bio bistro', 'Medulićeva ulica 20', 1, 10000, 45.81122113, 15.96667598, '014847540', 'Mon-Sat 12:00-21:30', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (6, 'Falafel, etc.', 'Ulica Andrije Žaje 60', 1, 10000, 45.80695890, 15.95334024, '012343945', 'Mon-Sun 11:00-21:30', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (7, 'Shambala', 'Iločka ulica 34', 1, 10000, 45.79956603, 15.95967074, '0957618710', 'Mon-Fri 11:00-18:00,Sat-Sun 11:00:16:00', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (8, 'Simple Green by Jelena', 'Zelinska Ulica 7', 1, 10000, 45.80106354, 15.97246634, '015561679', 'Mon-Sat 08:00-16:00', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (9, 'Vege Fino za sve', 'Ulica Lavoslava Ružičke 48', 1, 10000, 45.79626824, 15.96986333, '098777577', 'Mon-Fri 10:00-18:00,Sun 12:00-18:00', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (10, 'Barcode Mitra', 'Zagrebačka cesta 113', 1, 10000, 45.80673849, 15.92470464, '013770428', 'Mon-Sat 14:00-22:00', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (11, 'Pandora Greenbox', 'Obrov ulica 4', 2, 21000, 43.50930416, 16.43764950, '021236120', 'Mon-Sun 08:30-12:00', false);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (12, 'Upcafe', 'Ulica Domovinskog rata 29a', 2, 21000, 43.51692872, 16.44540914, '0916210500', 'Mon-Sat 07:00-20:00,Sun 08:00-20:00', true);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (13, 'The Botanist', 'Ulica Mihovila Pavlinovića 4', 3, 23000, 44.11643740, 15.22593932, '0924232296', 'Mon-Sun 12:00-23:00', false);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (14, 'Nishta', 'Prijeko ulica bb', 4, 20000, 42.67534972, 18.10592518, '020322088', 'Mon-Sat 11:30-22:00', false);
-INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openingHours, delivery) VALUES (15, 'BioMania Bistro Bol', 'Rudina 10', 5, 21420, 43.26175996, 16.65493408, '0919362276', 'Mon-Thu 13:00-21:00,Sat 13:00-21:00,Sun 10:00-22:00', false);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openinghours, delivery) VALUES (1, 'Restoran Vegehop', 'Vlaška ulica 79', 1, 10000, 45.81462343, 15.98823879, '014649400', 'Mon-Sat 12:00-20:00', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openinghours, delivery) VALUES (2, 'Gajbica', 'Vlaška ulica 7', 1, 10000, 45.81391498, 15.97946271, '0915141274', 'Mon-Sat 11:00-18:00', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openinghours, delivery) VALUES (3, 'OAZA Joyful Kitchen', 'Ulica Pavla Radića 9', 1, 10000, 45.81434540, 15.97565004, '0976602744', 'Mon-Fri 10:00-21:00,Sat 12:00-21:00', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openinghours, delivery) VALUES (4, 'BEKIND', 'Ilica 75', 1, 10000, 45.81245345, 15.96450714, '015534763', 'Tue-Sat 09:00-22:00,Sun 09:00-16:00', false);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openinghours, delivery) VALUES (5, 'Zrno bio bistro', 'Medulićeva ulica 20', 1, 10000, 45.81122113, 15.96667598, '014847540', 'Mon-Sat 12:00-21:30', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openinghours, delivery) VALUES (6, 'Falafel, etc.', 'Ulica Andrije Žaje 60', 1, 10000, 45.80695890, 15.95334024, '012343945', 'Mon-Sun 11:00-21:30', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openinghours, delivery) VALUES (7, 'Shambala', 'Iločka ulica 34', 1, 10000, 45.79956603, 15.95967074, '0957618710', 'Mon-Fri 11:00-18:00,Sat-Sun 11:00:16:00', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openinghours, delivery) VALUES (8, 'Simple Green by Jelena', 'Zelinska Ulica 7', 1, 10000, 45.80106354, 15.97246634, '015561679', 'Mon-Sat 08:00-16:00', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openinghours, delivery) VALUES (9, 'Vege Fino za sve', 'Ulica Lavoslava Ružičke 48', 1, 10000, 45.79626824, 15.96986333, '098777577', 'Mon-Fri 10:00-18:00,Sun 12:00-18:00', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openinghours, delivery) VALUES (10, 'Barcode Mitra', 'Zagrebačka cesta 113', 1, 10000, 45.80673849, 15.92470464, '013770428', 'Mon-Sat 14:00-22:00', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openinghours, delivery) VALUES (11, 'Pandora Greenbox', 'Obrov ulica 4', 2, 21000, 43.50930416, 16.43764950, '021236120', 'Mon-Sun 08:30-12:00', false);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openinghours, delivery) VALUES (12, 'Upcafe', 'Ulica Domovinskog rata 29a', 2, 21000, 43.51692872, 16.44540914, '0916210500', 'Mon-Sat 07:00-20:00,Sun 08:00-20:00', true);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openinghours, delivery) VALUES (13, 'The Botanist', 'Ulica Mihovila Pavlinovića 4', 3, 23000, 44.11643740, 15.22593932, '0924232296', 'Mon-Sun 12:00-23:00', false);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openinghours, delivery) VALUES (14, 'Nishta', 'Prijeko ulica bb', 4, 20000, 42.67534972, 18.10592518, '020322088', 'Mon-Sat 11:30-22:00', false);
+INSERT INTO public.restaurant (id, name, address, cityid, zipcode, latitude, longitude, telephone, openinghours, delivery) VALUES (15, 'BioMania Bistro Bol', 'Rudina 10', 5, 21420, 43.26175996, 16.65493408, '0919362276', 'Mon-Thu 13:00-21:00,Sat 13:00-21:00,Sun 10:00-22:00', false);
 
 
 --
