@@ -8,5 +8,5 @@ public class RestaurantWrapper
 	public string Context { get; } = "https://schema.org";
 	
 	[JsonProperty(PropertyName = "@graph")]
-	public List<RestaurantJsonld> Restaurants { get; } = new();
+	public List<RestaurantJsonld> Restaurants { get; set; } = new();
 }

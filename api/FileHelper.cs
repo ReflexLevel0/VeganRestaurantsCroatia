@@ -39,7 +39,9 @@ public class FileHelper
 	public async Task RefreshJsonFile(IEnumerable<RestaurantWithLinks> restaurants, string filePath)
 	{
 		var jsonRestaurants = restaurants.Select(r => new RestaurantJsonld(r.Id, r.Name, r.Address, r.Zipcode, r.Latitude, r.Longitude, r.Telephone, r.OpeningHours, r.Delivery, r.City, r.WebsiteLinks)).ToList();
-		await File.WriteAllTextAsync(filePath, JsonConvert.SerializeObject(jsonRestaurants));
+		var wrapper = new RestaurantWrapper();
+		wrapper.Restaurants = jsonRestaurants;
+		await File.WriteAllTextAsync(filePath, JsonConvert.SerializeObject(wrapper));
 	}
 
 	public async Task RefreshJsonFile(string filePath, IDb db)
