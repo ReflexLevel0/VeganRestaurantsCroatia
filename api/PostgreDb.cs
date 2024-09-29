@@ -7,7 +7,7 @@ public class PostgreDb : IDb
 {
 	private readonly NpgsqlDataSource _dataSource;
 
-	private readonly string _getRestaurantsQuery = $"SELECT r.id, r.name, address, zipcode, latitude, longitude, telephone, openingHours, delivery, c.name as cityName " +
+	private readonly string _getRestaurantsQuery = $"SELECT r.id, r.name, address, zipcode, latitude, longitude, telephone, opening_hours, delivery, c.name as cityName " +
 	                                              "FROM restaurant r JOIN city c ON r.cityId=c.id";
 	private readonly string _getLinksQuery = "SELECT restaurantid, l.type, link FROM restaurantLink rl " +
 		"JOIN link l ON rl.linktype = l.id";
@@ -34,7 +34,7 @@ public class PostgreDb : IDb
 		if (longitude != null) query += $" LOWER(longitude::varchar(256)) LIKE LOWER('%' || '{longitude}' || '%') OR";
 		if (delivery != null) query += $" LOWER(delivery::varchar(256)) LIKE LOWER('%' || '{delivery}' || '%') OR";
 		if (telephone != null) query += $" LOWER(telephone) LIKE LOWER('%' || '{telephone}' || '%') OR";
-		if (openingHours != null) query += $" LOWER(openingHours) LIKE LOWER('%' || '{openingHours}' || '%')";
+		if (openingHours != null) query += $" LOWER(opening_hours) LIKE LOWER('%' || '{openingHours}' || '%')";
 		query = query.Replace('\n', ' ').Trim();
 		if (query.EndsWith("OR")) query = query[..^2];
 		if (query.EndsWith("WHERE")) query = query.Replace("WHERE", "");
@@ -92,7 +92,7 @@ public class PostgreDb : IDb
 	public async Task<RestaurantWithLinks> PostRestaurant(NewRestaurantDTO restaurant)
 	{
 		//Inserting restaurant into the database
-		string insertQuery = $"INSERT INTO restaurant(name,address,zipcode,latitude,longitude,telephone,openingHours,delivery,cityid) " +
+		string insertQuery = $"INSERT INTO restaurant(name,address,zipcode,latitude,longitude,telephone,opening_hours,delivery,cityid) " +
 		                     $"VALUES('{restaurant.Name}', '{restaurant.Address}', {restaurant.Zipcode}, {restaurant.Latitude}, {restaurant.Longitude}, {StringToSqlString(restaurant.Telephone)}, {StringToSqlString(restaurant.OpeningHours)}, {restaurant.Delivery}, {await GetCityId(restaurant.City)})";
 		await using var cmd = _dataSource.CreateCommand(insertQuery);
 		int changedRows = await cmd.ExecuteNonQueryAsync();
@@ -115,8 +115,8 @@ public class PostgreDb : IDb
 		                     $"zipcode={restaurant.Zipcode}," +
 		                     $"latitude={restaurant.Latitude}," +
 		                     $"longitude={restaurant.Longitude}," +
-		                     $"phone={StringToSqlString(restaurant.Telephone)}," +
-		                     $"openingHours={StringToSqlString(restaurant.OpeningHours)}," +
+		                     $"telephone={StringToSqlString(restaurant.Telephone)}," +
+		                     $"opening_hours={StringToSqlString(restaurant.OpeningHours)}," +
 		                     $"delivery={restaurant.Delivery}," +
 		                     $"cityId={await GetCityId(restaurant.City)} " +
 		                     $"WHERE id={restaurant.Id}";

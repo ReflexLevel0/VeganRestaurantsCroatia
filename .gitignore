@@ -7,3 +7,4 @@ backend/node_modules
 api/bin/*
 api/obj/*
 api/dbConnectionString.txt
+.env

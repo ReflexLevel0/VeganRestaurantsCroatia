@@ -16,8 +16,13 @@
       - api
 
   db:
-    image: postgres:14.5
+    image: postgres:16.3
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db.sql:/docker-entrypoint-initdb.d/db.sql
+      - ./postgres-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: $POSTGRES_USER
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
-      POSTGRES_DATABASE: postgres
+      POSTGRES_DATABASE: vegan_restaurants

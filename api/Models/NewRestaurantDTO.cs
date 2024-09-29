@@ -50,7 +50,7 @@ public class NewRestaurantDTO(string name, string address, int zipcode, double l
 	/// Working hours
 	/// </summary>
 	/// <example>Mon-Sat 12:00-20:00</example>
-	[JsonProperty(PropertyName = "openingHours")]
+	[JsonProperty(PropertyName = "opening_hours")]
 	public string? OpeningHours { get; set; } = openingHours;
 	
 	/// <summary>
